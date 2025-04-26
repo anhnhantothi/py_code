@@ -1,0 +1,30 @@
+.neon-text {
+    color: #fff;
+    text-shadow:
+    0 0 4px rgba(255,255,255,0.9),
+    0 0 8px rgba(255,255,255,0.8),
+    0 0 16px rgba(0,255,255,0.7),
+    0 0 32px rgba(0,255,255,0.6),
+    0 0 48px rgba(0,255,255,0.5);
+  }
+  
+  @keyframes gradientBg {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  .hero-gradient {
+    background: linear-gradient(270deg, #b891fc, #ffa4d1, #b8fee6);
+    background-size: 600% 600%;
+    animation: gradientBg 15s ease infinite;
+  }
+  
+
+  
