@@ -15,7 +15,7 @@ const menuItems = [
 const NavigationMenu: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
+  const {isAuthenticated, username, logout} = useAuth();  
 
   const selectedKey = menuItems.find(item => item.key === location.pathname)?.key || '/';
 
@@ -27,6 +27,7 @@ const NavigationMenu: React.FC = () => {
       navigate('/login');
     }
   };
+  
 
   return (
     // Full-screen fixed nav bar
@@ -38,6 +39,7 @@ const NavigationMenu: React.FC = () => {
         items={menuItems}
         style={{ flex: 1, border: 'none' }}
       />
+      {isAuthenticated && <p className="mr-4">Hello, {username}!</p>}
       <Button type="primary" onClick={onAuthClick} className="ml-4">
         {isAuthenticated ? 'Logout' : 'Login'}
       </Button>
