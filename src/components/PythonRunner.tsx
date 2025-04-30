@@ -9,6 +9,8 @@ interface PythonRunnerProps {
   overlayButton?: boolean;
   showLintButton?: boolean;
   expandOutput?: boolean; // fill remaining screen height
+  onChange?: (newCode: string) => void;   // ✅ thêm dòng này
+  onOutput?: (output: string) => void;    // ✅ và dòng này
 }
 
 const PythonRunner: React.FC<PythonRunnerProps> = ({
