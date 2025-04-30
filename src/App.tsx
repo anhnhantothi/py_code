@@ -9,6 +9,7 @@ import HomePage from './pages/home/home-page';
 import LoginPage from './pages/login/login-page';
 import RegisterPage from './pages/register/register-page';
 import LessonPage from './pages/py-runner/lesson';
+import ExercisePage from './pages/exercise/exercise-page';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path="/lesson/:lessonId" element={<LessonPage />} />
         <Route path="/document" element={<DocumentationPage />} />
         <Route path="/workspace" element={<Workspace />} />
+        <Route path="/exercise/:lessonId" element={<ExercisePage />} />
       </Routes>
     </div>
   </>
