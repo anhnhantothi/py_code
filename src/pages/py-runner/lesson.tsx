@@ -1,7 +1,7 @@
-/* File: src/pages/LessonPage.tsx */
+// File: src/pages/LessonPage.tsx
 import React, { useState, useEffect, memo } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import { Layout, Spin, Menu } from 'antd';
+import { Layout, Spin, Menu, Button } from 'antd';
 import { motion } from 'framer-motion';
 import PythonRunner from '../../components/PythonRunner';
 import { fetchTopics, fetchLessonDetail } from '../../services/lessonService';
@@ -71,7 +71,6 @@ const SublessonBlock: React.FC<{ block: Sublesson }> = memo(({ block }) => {
             <div className="mb-2 text-indigo-600 font-medium text-sm uppercase tracking-wide">
               Mã lệnh Python
             </div>
-            {/* Giới hạn chiều cao và scroll khi quá nội dung */}
             <div className="flex-1 h-[300px] overflow-auto">
               <PythonRunner initialCode={block.content} />
             </div>
@@ -139,7 +138,6 @@ const LessonPage: React.FC = () => {
     );
   }
 
-  // Chuẩn bị menu sidebar
   const sidebarItems = topics.map((topic) => ({
     key: `topic-${topic.id}`,
     label: topic.name,
@@ -189,13 +187,23 @@ const LessonPage: React.FC = () => {
                   <SublessonBlock key={block.id} block={block} />
                 ))}
             </div>
+
+            {/* Nút làm bài tập / chuyển tiếp */}
+            <div className="flex justify-end mt-8">
+              <Button
+                type="primary"
+                size="large"
+                onClick={() => navigate(`/exercise/${lesson.id}`)}
+              >
+                Làm bài tập
+              </Button>
+            </div>
           </motion.div>
         ) : (
-          <EmptyLesson onPromptSidebar={() => {
-            // ví dụ: focus hoặc mở rộng sidebar,
-            // hoặc chuyển tới route /lesson (nếu cần)
-            navigate('/lesson');
-          }} />        )}
+          <EmptyLesson
+            onPromptSidebar={() => navigate('/lesson')}
+          />
+        )}
       </Content>
     </Layout>
   );

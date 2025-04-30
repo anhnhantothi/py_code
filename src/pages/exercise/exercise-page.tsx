@@ -1,22 +1,43 @@
-import React, { useState } from 'react';
-import { Row, Col, Card, Button, Alert, message } from 'antd';
+// File: src/pages/ExercisePage.tsx
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Row, Col, Card, Button, Alert, message, Spin } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
 import PythonRunner from '../../components/PythonRunner';
-
-const correctOutput = 'Hello, world!';
+import { fetchExercise, Exercise } from '../../services/exerciseService';
 
 const ExercisePage: React.FC = () => {
+  const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
+
+  const [exercise, setExercise] = useState<Exercise | null>(null);
+  const [loading, setLoading] = useState(true);
   const [userCode, setUserCode] = useState('');
   const [runnerOutput, setRunnerOutput] = useState('');
   const [result, setResult] = useState<null | 'success' | 'fail'>(null);
+
+  useEffect(() => {
+    const loadExercise = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchExercise(lessonId!);
+        setExercise(data);
+        setUserCode(data.initial_code || '');
+      } catch (error) {
+        console.error(error);
+        message.error('Lỗi khi tải bài tập.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadExercise();
+  }, [lessonId]);
 
   const handleSubmit = () => {
     if (!runnerOutput.trim()) {
       return message.warning('⚠️ Vui lòng chạy code trước khi nộp bài.');
     }
-    if (runnerOutput.trim() === correctOutput) {
+    if (exercise && runnerOutput.trim() === exercise.expected_output.trim()) {
       setResult('success');
       message.success('✅ Chính xác!');
     } else {
@@ -25,12 +46,22 @@ const ExercisePage: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="w-screen h-screen flex items-center justify-center">
+        <Spin size="large" tip="Đang tải bài tập..." />
+      </div>
+    );
+  }
+
+  if (!exercise) {
+    return <div className="text-center text-gray-500 mt-10">Không tìm thấy bài tập.</div>;
+  }
+
   return (
     <main className="min-h-screen bg-gray-50 py-10">
       <div className="container mx-auto px-4">
         <Row gutter={[24, 24]}>
-          {/* ———————————————— */}
-          {/* CỘT TRÁI: ĐỀ BÀI */}
           <Col xs={24} md={10}>
             <Card
               title={
@@ -47,37 +78,22 @@ const ExercisePage: React.FC = () => {
               className="rounded-xl shadow-md"
             >
               <h2 className="text-indigo-600 text-xl font-semibold mb-2">
-                In ra "Hello, world!"
+                {exercise.title}
               </h2>
-              <p className="text-gray-600 mb-4">
-                Viết chương trình Python để in ra đúng dòng chữ sau:
-              </p>
-              <pre className="bg-gray-100 border border-gray-200 rounded-md p-4 font-mono text-sm">
-                Hello, world!
-              </pre>
+              <p className="text-gray-600 mb-4">{exercise.description}</p>
 
               {result && (
                 <div className="mt-6">
                   {result === 'success' ? (
-                    <Alert
-                      message="🎉 Chính xác! Bạn đã hoàn thành."
-                      type="success"
-                      showIcon
-                    />
+                    <Alert message="🎉 Chính xác! Bạn đã hoàn thành." type="success" showIcon />
                   ) : (
-                    <Alert
-                      message="❌ Sai rồi. Hãy thử lại nhé."
-                      type="error"
-                      showIcon
-                    />
+                    <Alert message="❌ Sai rồi. Hãy thử lại nhé." type="error" showIcon />
                   )}
                 </div>
               )}
             </Card>
           </Col>
 
-          {/* ———————————————— */}
-          {/* CỘT PHẢI: CODE EDITOR + NÚT NỘP */}
           <Col xs={24} md={14}>
             <Card
               title="💻 Trình Soạn Thảo Code"
