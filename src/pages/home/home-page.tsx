@@ -5,8 +5,21 @@ import NavigationMenu from '../../components/navigationMenu';
 import Footer from '../../components/footer';
 import '../../assets/css/global.css';
 import '../../assets/css/homepage.css';
+import { useAuth,  } from '../../context/auth_context';
+import {
+  BookFilled,
+  CheckCircleOutlined,
+  CodeOutlined,
+  VideoCameraOutlined,
+  GlobalOutlined,
+  UsergroupAddOutlined,
+} from '@ant-design/icons';
+import { color } from 'framer-motion';
+
+
 
 const HomePage: React.FC = () => {
+  const { username, isAuthenticated } = useAuth();
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
   }, []);
@@ -18,25 +31,73 @@ const HomePage: React.FC = () => {
 
       <div className="flex-1 overflow-auto">
         {/* Hero Section */}
-        <section className="w-full h-screen flex items-center justify-center px-8 hero-bg">
-          <div className="max-w-6xl w-full grid md:grid-cols-2 gap-12 items-center p-8 rounded-xl glass-box" data-aos="fade-down">
-            <img
-              src="https://source.unsplash.com/featured/?coding"
-              alt="Welcome"
-              className="rounded-xl shadow-md w-full h-auto object-cover"
-            />
-            <div>
-              <h1 className="text-4xl sm:text-5xl font-bold mb-4">Chào mừng đến với Học Python Online</h1>
-              <p className="text-lg mb-6">
+        <section className="w-full min-h-screen bg-gradient-to-r from-indigo-50 to-white flex items-center">
+          <div className="container mx-auto flex flex-col md:flex-row items-center px-6">
+            {/* — Text & CTA — */}
+            <div className="md:w-1/2 space-y-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+              Chào mừng <span style={{ color: '#4F46E5' }}>{isAuthenticated && username ? username : 'bạn'}</span> đến với Học Python Online
+            </h1>
+              <p className="text-lg text-gray-700">
                 Trung tâm học Python trực tuyến với tài liệu, bài tập và môi trường thử nghiệm ngay trên trình duyệt.
               </p>
-              <a href="#features" className="btn-purple">
-                Bắt đầu học ngay
-              </a>
+              <div className="flex space-x-4">
+                <a
+                  href="#features"
+                  className="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition"
+                >
+                  Bắt đầu học ngay
+                </a>
+                <a
+                  href="#trial"
+                  className="px-6 py-3 bg-white border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 transition"
+                >
+                  Dùng thử miễn phí
+                </a>
+              </div>
+              <div className="flex space-x-8 mt-8">
+                <div className="flex items-center space-x-2">
+                  <BookFilled className="text-indigo-600 text-xl" />
+                  <span className="text-gray-700">100+ Bài tập</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <CheckCircleOutlined className="text-green-500 text-xl" />
+                  <span className="text-gray-700">Auto-Check</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <CodeOutlined className="text-yellow-500 text-xl" />
+                  <span className="text-gray-700">Hỗ trợ code</span>
+                </div>
+              </div>
+            </div>
+
+            {/* — Hình ảnh & Floating Stats — */}
+            <div className="md:w-1/2 relative mt-10 md:mt-0 flex justify-center">
+              {/* Đặt ảnh vào khung tròn */}
+              <div className="relative w-72 h-72 bg-green-100 rounded-full flex items-center justify-center">
+                <img
+                  src="https://source.unsplash.com/featured/?coding"
+                  alt="Coding"
+                  className="w-48 h-48 object-cover rounded-full shadow-md"
+                />
+              </div>
+
+              {/* Floating cards */}
+              <div className="absolute top-10 right-0 bg-white p-3 rounded-xl shadow-lg flex items-center space-x-2">
+                <VideoCameraOutlined className="text-green-500 text-xl" />
+                <span className="font-medium">2K+ Video</span>
+              </div>
+              <div className="absolute bottom-16 left-0 bg-white p-3 rounded-xl shadow-lg flex items-center space-x-2">
+                <GlobalOutlined className="text-blue-500 text-xl" />
+                <span className="font-medium">5K+ Bài học</span>
+              </div>
+              <div className="absolute bottom-0 right-10 bg-white p-3 rounded-xl shadow-lg flex items-center space-x-2">
+                <UsergroupAddOutlined className="text-purple-500 text-xl" />
+                <span className="font-medium">250+ Tutor</span>
+              </div>
             </div>
           </div>
         </section>
-
         {/* Code Runner */}
         <section className="w-full py-20 px-4 bg-white" data-aos="fade-right">
           <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10">

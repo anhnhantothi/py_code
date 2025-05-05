@@ -26,7 +26,8 @@ function App() {
         <Route path="/lesson/:lessonId" element={<LessonPage />} />
         <Route path="/document" element={<DocumentationPage />} />
         <Route path="/workspace" element={<Workspace />} />
-        <Route path="/exercise/:lessonId" element={<ExercisePage />} />
+        <Route path="/lesson/:lessonId/exercise" element={<ExercisePage />} />
+        {/* <Route path="/exercise/:lessonId" element={<ExercisePage />} /> */}
       </Routes>
     </div>
   </>

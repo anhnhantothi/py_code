@@ -39,7 +39,9 @@ const NavigationMenu: React.FC = () => {
         items={menuItems}
         style={{ flex: 1, border: 'none' }}
       />
-      {isAuthenticated && <p className="mr-4">Hello, {username}!</p>}
+        <div>
+          {isAuthenticated ? `Chào, ${username}` : 'Chào bạn'}
+        </div>
       <Button type="primary" onClick={onAuthClick} className="ml-4">
         {isAuthenticated ? 'Logout' : 'Login'}
       </Button>

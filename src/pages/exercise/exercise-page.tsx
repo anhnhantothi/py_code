@@ -37,7 +37,8 @@ const ExercisePage: React.FC = () => {
     if (!runnerOutput.trim()) {
       return message.warning('⚠️ Vui lòng chạy code trước khi nộp bài.');
     }
-    if (exercise && runnerOutput.trim() === exercise.expected_output.trim()) {
+    if (exercise &&
+      runnerOutput.trim().toLowerCase() === exercise.expected_output.trim().toLowerCase()) {
       setResult('success');
       message.success('✅ Chính xác!');
     } else {

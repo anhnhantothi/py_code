@@ -19,6 +19,8 @@ const PythonRunner: React.FC<PythonRunnerProps> = ({
   overlayButton = false,
   showLintButton = false,
   expandOutput = false,
+  onChange,
+  onOutput,
 }) => {
   const [pyodide, setPyodide] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -43,20 +45,26 @@ const PythonRunner: React.FC<PythonRunnerProps> = ({
   }, [readOnly]);
 
   const runCode = async () => {
-    if (!pyodide) return;
-    outputRef.current = '';
-    console.log(code);
-    setShowOutput(true);
-    setHasError(false);
-    pyodide.setStdout({ batched: (s: string) => { outputRef.current += s; } });
-    try {
-      await pyodide.runPythonAsync(code);
-      setOutput(outputRef.current);
-    } catch (err: any) {
-      setOutput(err.toString());
-      setHasError(true);
+  if (!pyodide) return;
+  outputRef.current = '';
+  setShowOutput(true);
+  setHasError(false);
+  pyodide.setStdout({ batched: (s: string) => { outputRef.current += s; } });
+  try {
+    await pyodide.runPythonAsync(code);
+    setOutput(outputRef.current);
+    if (typeof onOutput === 'function') {
+      onOutput(outputRef.current); // ✅ THÊM DÒNG NÀY
     }
-  };
+  } catch (err: any) {
+    setOutput(err.toString());
+    setHasError(true);
+    if (typeof onOutput === 'function') {
+      onOutput(err.toString()); // ❗️có thể không cần, nhưng để nhất quán
+    }
+  }
+};
+
 
   // container: if expandOutput, full height flex-col
   const containerClasses = [
@@ -76,11 +84,12 @@ const PythonRunner: React.FC<PythonRunnerProps> = ({
       ) : (
         <>
           <textarea
-            className={`w-full p-2 font-mono resize-none border ${overlayButton ? '' : 'border-gray-300 rounded'}`}
+            className={`w-full p-2 font-mono resize-none border ${overlayButton ? '' : 'border-gray-100 rounded'}`}
             style={overlayButton ? { paddingBottom: '4rem' } : undefined}
             value={code}
             onChange={e => setCode(e.target.value)}
             rows={overlayButton ? 8 : 10}
+            
           />
 
           <div className={`mt-2 flex space-x-2 bg-transparent ${overlayButton ? 'bottom-2 left-2 right-2 justify-end' : ''}`}>
