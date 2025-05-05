@@ -1,5 +1,5 @@
-
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+// File: src/context/auth_context.tsx
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -8,12 +8,7 @@ interface AuthContextType {
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>({
-  isAuthenticated: false,
-  username: null,
-  login: () => {},
-  logout: () => {},
-});
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -28,27 +23,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const login = (username: string) => {
-    // TODO: thêm logic xác thực (API call, token lưu localStorage,...)
     setUsername(username);
     setIsAuthenticated(true);
     localStorage.setItem('username', username);
   };
 
   const logout = () => {
-    // TODO: xóa token, clear session
     setUsername(null);
     setIsAuthenticated(false);
     localStorage.removeItem('username');
+    localStorage.removeItem('token');
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, username }}>
+    <AuthContext.Provider value={{ isAuthenticated, username, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');

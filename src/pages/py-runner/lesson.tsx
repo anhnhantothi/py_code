@@ -4,7 +4,7 @@ import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { Layout, Spin, Menu, Button } from 'antd';
 import { motion } from 'framer-motion';
 import PythonRunner from '../../components/PythonRunner';
-import { fetchTopics, fetchLessonDetail } from '../../services/lessonService';
+import { fetchTopics, fetchLessonDetail, markLessonComplete } from '../../services/lessonService';
 import EmptyLesson from './empty-lesson';
 
 const { Content, Sider } = Layout;
@@ -21,8 +21,10 @@ interface Lesson {
   title: string;
   level: string;
   description: string;
+  has_exercise: boolean;
   sublessons: Sublesson[];
 }
+
 
 interface Topic {
   id: number;
@@ -115,21 +117,22 @@ const LessonPage: React.FC = () => {
       try {
         const fetchedTopics = await fetchTopics();
         setTopics(fetchedTopics);
-
+  
         if (lessonId) {
           const fetchedLesson = await fetchLessonDetail(lessonId);
           setLesson(fetchedLesson);
         } else {
           setLesson(null);
         }
-      } catch (err) {
-        console.error(err);
+      } catch (err: any) {
+        console.error('Error loading lesson or topics:', err);
+        alert(err.message || 'Đã xảy ra lỗi khi tải bài học.');
       } finally {
         setLoading(false);
       }
     })();
   }, [lessonId]);
-
+  
   if (loading) {
     return (
       <div className="w-screen h-screen flex items-center justify-center bg-white">
@@ -146,7 +149,32 @@ const LessonPage: React.FC = () => {
       label: ls.title,
     })),
   }));
+  const handleCompleteAndNext = async () => {
+    const token = localStorage.getItem('token');
+    if (!token || !lesson) {
+      alert("Bạn chưa đăng nhập hoặc bài học chưa sẵn sàng.");
+      return;
+    }
 
+    try {
+      await markLessonComplete(lesson.id);
+      // ✅ Điều hướng sang bài tiếp theo nếu muốn
+      // Ví dụ: tìm bài tiếp theo trong topics
+      const currentTopic = topics.find(topic => topic.lessons.some(l => l.id === lesson.id));
+      if (!currentTopic) return;
+
+      const lessonIndex = currentTopic.lessons.findIndex(l => l.id === lesson.id);
+      const nextLesson = currentTopic.lessons[lessonIndex + 1];
+      if (nextLesson) {
+        navigate(`/lesson/${nextLesson.id}`);
+      } else {
+        alert('🎉 Bạn đã hoàn thành toàn bộ chủ đề này!');
+      }
+    } catch (error) {
+      console.error('Error completing lesson:', error);
+      alert('Lỗi khi ghi nhận hoàn thành bài học.');
+    }
+  };
   return (
     <Layout className="w-screen h-screen">
       <Sider width={250} className="bg-white border-r border-gray-200">
@@ -189,15 +217,15 @@ const LessonPage: React.FC = () => {
             </div>
 
             {/* Nút làm bài tập / chuyển tiếp */}
-            <div className="flex justify-end mt-8">
-              <Button
-                type="primary"
-                size="large"
-                onClick={() => navigate(`/exercise/${lesson.id}`)}
-              >
+            {lesson.has_exercise ? (
+              <Button type="primary" size="large" onClick={() => navigate(`/exercise/${lesson.id}`)}>
                 Làm bài tập
               </Button>
-            </div>
+            ) : (
+              <Button type="default" size="large" onClick={handleCompleteAndNext}>
+                Bài tiếp theo
+              </Button>
+            )}
           </motion.div>
         ) : (
           <EmptyLesson
