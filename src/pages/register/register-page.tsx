@@ -1,8 +1,10 @@
 import '../../assets/css/login.css'; 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/auth_context';
 
 const RegisterPage: React.FC = () => {
+  const { login: loginContextFn } = useAuth();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -10,14 +12,14 @@ const RegisterPage: React.FC = () => {
   const navigate = useNavigate();  
 
   const handleRegister = async (e: React.FormEvent) => {
-
-
     e.preventDefault();
+  
     if (password !== confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
-    try{
+  
+    try {
       const response = await fetch('http://localhost:5000/register', {
         method: 'POST',
         headers: {
@@ -25,10 +27,20 @@ const RegisterPage: React.FC = () => {
         },
         body: JSON.stringify({ username, email, password }),
       });
+  
       const data = await response.json();
+  
       if (response.ok) {
+        //  Lưu username vào localStorage
+        localStorage.setItem('username', username);
+  
+        //  Điều hướng về trang chủ
         alert('Registration successful!');
+        loginContextFn(username); 
         navigate('/', { replace: true });
+  
+        //  Reload lại trang để context hoặc layout cập nhật tên user
+        window.location.reload();  // hoặc bạn dùng context nếu có
       } else {
         alert(data.error || 'Registration failed.');
       }
@@ -36,10 +48,8 @@ const RegisterPage: React.FC = () => {
       console.error('Registration error:', error);
       alert('Server error!! Registration failed.');
     }
-    
-    // alert('Registration submitted!');
   };
-
+  
   return (
     <div className="login-wrapper">
       <form className="neumorphic-card" onSubmit={handleRegister}>
