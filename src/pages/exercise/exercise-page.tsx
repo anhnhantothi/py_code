@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Row, Col, Card, Button, Alert, message, Spin } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import PythonRunner from '../../components/PythonRunner';
-import { fetchExercise, Exercise } from '../../services/exerciseService';
+import { fetchExercise, Exercise, submitExercise } from '../../services/exerciseService';
 
 const ExercisePage: React.FC = () => {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -33,17 +33,27 @@ const ExercisePage: React.FC = () => {
     loadExercise();
   }, [lessonId]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    
     if (!runnerOutput.trim()) {
       return message.warning('⚠️ Vui lòng chạy code trước khi nộp bài.');
     }
-    if (exercise &&
-      runnerOutput.trim().toLowerCase() === exercise.expected_output.trim().toLowerCase()) {
-      setResult('success');
-      message.success('✅ Chính xác!');
-    } else {
-      setResult('fail');
-      message.error('❌ Sai rồi, thử lại nhé!');
+  
+    if (!exercise) return;
+    
+    try {
+      console.log('Submitting code:', userCode);
+      const result = await submitExercise(exercise.id, userCode);
+      if (result.correct) {
+        setResult('success');
+        message.success('✅ Chính xác!');
+      } else {
+        setResult('fail');
+        message.error('❌ Sai rồi, thử lại nhé!');
+      }
+    } catch (err) {
+      console.error(err);
+      message.error('Đã xảy ra lỗi khi nộp bài.');
     }
   };
 
