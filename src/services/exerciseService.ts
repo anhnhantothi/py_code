@@ -1,7 +1,7 @@
 // File: src/services/exerciseService.ts
-
+import { API_BASE } from '../config';
 export interface Exercise {
-    id: string;
+    id: number;
     title: string;
     description: string;
     initial_code: string;
@@ -15,7 +15,7 @@ export interface Exercise {
    */
   export async function fetchExercise(lessonId: string): Promise<Exercise> {
     const response = await fetch(
-      ` http://localhost:5000/lesson/${lessonId}/exercise`
+      ` ${API_BASE}/lesson/${lessonId}/exercise`
     );
     const data = await response.json();
     if (!response.ok) {
@@ -24,3 +24,20 @@ export interface Exercise {
     return data;
   }
   
+  export const submitExercise = async (exerciseId: number, code: string) => {
+    const token = localStorage.getItem('token');
+    const res = await fetch(`http://localhost:5000/exercise/${exerciseId}/submit`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ code }) 
+    });
+  
+    if (!res.ok) {
+      throw new Error('Lỗi khi nộp bài.');
+    }
+  
+    return res.json();  // { correct, actual_output }
+  };

@@ -21,7 +21,7 @@ interface Lesson {
   title: string;
   level: string;
   description: string;
-  has_exercise: boolean;
+  unlock_condition: 'read' | 'exercise';
   sublessons: Sublesson[];
 }
 
@@ -74,7 +74,7 @@ const SublessonBlock: React.FC<{ block: Sublesson }> = memo(({ block }) => {
               Mã lệnh Python
             </div>
             <div className="flex-1 h-[300px] overflow-auto">
-              <PythonRunner initialCode={block.content} />
+              <PythonRunner initialCode={block.content } />
             </div>
           </div>
         </motion.div>
@@ -158,8 +158,8 @@ const LessonPage: React.FC = () => {
 
     try {
       await markLessonComplete(lesson.id);
-      // ✅ Điều hướng sang bài tiếp theo nếu muốn
-      // Ví dụ: tìm bài tiếp theo trong topics
+      //  Điều hướng sang bài tiếp theo nếu muốn
+      // tìm bài tiếp theo trong topics
       const currentTopic = topics.find(topic => topic.lessons.some(l => l.id === lesson.id));
       if (!currentTopic) return;
 
@@ -217,8 +217,14 @@ const LessonPage: React.FC = () => {
             </div>
 
             {/* Nút làm bài tập / chuyển tiếp */}
-            {lesson.has_exercise ? (
-              <Button type="primary" size="large" onClick={() => navigate(`/exercise/${lesson.id}`)}>
+            {lesson.unlock_condition === 'exercise' && (
+              <div className="text-sm text-red-500 mb-4">
+                ⚠️ Bạn cần hoàn thành bài tập để qua bài này
+              </div>
+            )}
+
+            {lesson.unlock_condition === 'exercise' ? (
+              <Button type="primary" size="large" onClick={() => navigate(`/lesson/${lesson.id}/exercise`)}>
                 Làm bài tập
               </Button>
             ) : (
