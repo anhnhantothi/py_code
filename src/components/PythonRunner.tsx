@@ -27,16 +27,19 @@ const PythonRunner: React.FC<PythonRunnerProps> = ({
   const [code, setCode] = useState(initialCode);
   const [output, setOutput] = useState('');
   const [hasError, setHasError] = useState(false);
-  const [showOutput, setShowOutput] = useState(true);
+  // Chỉ hiển thị output sau khi nhấn run
+  const [showOutput, setShowOutput] = useState(false);
   const [chatVisible, setChatVisible] = useState(false);
   const outputRef = useRef('');
 
-  // Sync code when initialCode changes
+  // Đồng bộ code khi initialCode thay đổi
   useEffect(() => {
     setCode(initialCode);
     if (typeof onChange === 'function') {
       onChange(initialCode);
     }
+    // ẩn output khi initialCode thay đổi
+    setShowOutput(false);
   }, [initialCode, onChange]);
 
   useEffect(() => {
@@ -76,7 +79,6 @@ const PythonRunner: React.FC<PythonRunnerProps> = ({
   const containerClasses = [
     'w-full rounded overflow-hidden',
     expandOutput ? 'flex flex-col h-full' : 'min-h-[200px] p-4',
-    overlayButton ? '' : ''
   ].filter(Boolean).join(' ');
 
   return (
@@ -110,11 +112,13 @@ const PythonRunner: React.FC<PythonRunnerProps> = ({
 
           {chatVisible && <ChatFixModal visible={chatVisible} code={code} onClose={() => setChatVisible(false)} />}
 
-          {!overlayButton && expandOutput && (
-            <pre className="flex-1 mt-4 overflow-auto bg-gray-800 text-white p-4 rounded">{output}</pre>
-          )}
-          {!expandOutput && (!overlayButton || (overlayButton && showOutput && output)) && (
-            <pre className="mt-4 h-32 overflow-auto bg-gray-800 text-white p-4 rounded">{output}</pre>
+          {/* Output chỉ hiển thị sau khi nhấn run */}
+          {showOutput && (
+            expandOutput ? (
+              <pre className="flex-1 mt-4 overflow-auto bg-gray-800 text-white p-4 rounded">{output}</pre>
+            ) : (
+              <pre className="mt-4 h-32 overflow-auto bg-gray-800 text-white p-4 rounded">{output}</pre>
+            )
           )}
         </>
       )}

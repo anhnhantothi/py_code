@@ -25,14 +25,12 @@ interface Lesson {
   sublessons: Sublesson[];
 }
 
-
 interface Topic {
   id: number;
   name: string;
   lessons: { id: number; title: string }[];
 }
 
-// Component riêng để render từng block
 const SublessonBlock: React.FC<{ block: Sublesson }> = memo(({ block }) => {
   const sharedProps = {
     key: `sublesson-${block.id}`,
@@ -46,26 +44,18 @@ const SublessonBlock: React.FC<{ block: Sublesson }> = memo(({ block }) => {
       return (
         <motion.div {...sharedProps}>
           <div className="mb-6 border-b border-blue-200">
-            <h2
-              className="text-3xl font-semibold text-blue-700"
-              dangerouslySetInnerHTML={{ __html: block.content }}
-            />
+            <h2 className="text-3xl font-semibold text-blue-700" dangerouslySetInnerHTML={{ __html: block.content }} />
           </div>
         </motion.div>
       );
-
     case 'text':
       return (
         <motion.div {...sharedProps}>
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-            <div
-              className="prose prose-gray max-w-none"
-              dangerouslySetInnerHTML={{ __html: block.content }}
-            />
+            <div className="prose prose-gray max-w-none" dangerouslySetInnerHTML={{ __html: block.content }} />
           </div>
         </motion.div>
       );
-
     case 'cmd':
       return (
         <motion.div {...sharedProps}>
@@ -74,12 +64,12 @@ const SublessonBlock: React.FC<{ block: Sublesson }> = memo(({ block }) => {
               Mã lệnh Python
             </div>
             <div className="flex-1 h-[300px] overflow-auto">
-              <PythonRunner initialCode={block.content } />
+              {/* PythonRunner giờ đã tự handle show/hide output */}
+              <PythonRunner initialCode={block.content} />
             </div>
           </div>
         </motion.div>
       );
-
     case 'example':
       return (
         <motion.div {...sharedProps}>
@@ -87,14 +77,10 @@ const SublessonBlock: React.FC<{ block: Sublesson }> = memo(({ block }) => {
             <div className="mb-2 text-green-700 font-medium text-sm uppercase tracking-wide">
               Ví dụ
             </div>
-            <div
-              className="prose prose-green max-w-none"
-              dangerouslySetInnerHTML={{ __html: block.content }}
-            />
+            <div className="prose prose-green max-w-none" dangerouslySetInnerHTML={{ __html: block.content }} />
           </div>
         </motion.div>
       );
-
     default:
       return null;
   }
@@ -110,14 +96,13 @@ const LessonPage: React.FC = () => {
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Load topics + lesson detail
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
         const fetchedTopics = await fetchTopics();
         setTopics(fetchedTopics);
-  
+
         if (lessonId) {
           const fetchedLesson = await fetchLessonDetail(lessonId);
           setLesson(fetchedLesson);
@@ -125,14 +110,14 @@ const LessonPage: React.FC = () => {
           setLesson(null);
         }
       } catch (err: any) {
-        console.error('Error loading lesson or topics:', err);
+        console.error(err);
         alert(err.message || 'Đã xảy ra lỗi khi tải bài học.');
       } finally {
         setLoading(false);
       }
     })();
   }, [lessonId]);
-  
+
   if (loading) {
     return (
       <div className="w-screen h-screen flex items-center justify-center bg-white">
@@ -141,40 +126,30 @@ const LessonPage: React.FC = () => {
     );
   }
 
-  const sidebarItems = topics.map((topic) => ({
+  const sidebarItems = topics.map(topic => ({
     key: `topic-${topic.id}`,
     label: topic.name,
-    children: topic.lessons.map((ls) => ({
+    children: topic.lessons.map(ls => ({
       key: `/lesson/${ls.id}`,
       label: ls.title,
     })),
   }));
-  const handleCompleteAndNext = async () => {
-    const token = localStorage.getItem('token');
-    if (!token || !lesson) {
-      alert("Bạn chưa đăng nhập hoặc bài học chưa sẵn sàng.");
-      return;
-    }
 
+  const handleCompleteAndNext = async () => {
+    if (!lesson) return;
     try {
       await markLessonComplete(lesson.id);
-      //  Điều hướng sang bài tiếp theo nếu muốn
-      // tìm bài tiếp theo trong topics
-      const currentTopic = topics.find(topic => topic.lessons.some(l => l.id === lesson.id));
+      const currentTopic = topics.find(t => t.lessons.some(l => l.id === lesson.id));
       if (!currentTopic) return;
-
-      const lessonIndex = currentTopic.lessons.findIndex(l => l.id === lesson.id);
-      const nextLesson = currentTopic.lessons[lessonIndex + 1];
-      if (nextLesson) {
-        navigate(`/lesson/${nextLesson.id}`);
-      } else {
-        alert('🎉 Bạn đã hoàn thành toàn bộ chủ đề này!');
-      }
-    } catch (error) {
-      console.error('Error completing lesson:', error);
+      const idx = currentTopic.lessons.findIndex(l => l.id === lesson.id);
+      const next = currentTopic.lessons[idx + 1];
+      if (next) navigate(`/lesson/${next.id}`);
+      else alert('🎉 Bạn đã hoàn thành toàn bộ chủ đề này!');
+    } catch {
       alert('Lỗi khi ghi nhận hoàn thành bài học.');
     }
   };
+
   return (
     <Layout className="w-screen h-screen">
       <Sider width={250} className="bg-white border-r border-gray-200">
@@ -182,47 +157,34 @@ const LessonPage: React.FC = () => {
           mode="inline"
           selectedKeys={[location.pathname]}
           items={sidebarItems}
-          onClick={(e) => navigate(e.key)}
+          onClick={e => navigate(e.key)}
           style={{ height: '100%', borderRight: 0 }}
         />
       </Sider>
 
       <Content className="overflow-auto p-6 lg:p-8 bg-gray-50">
         {lesson ? (
-          <motion.div
-            key={lesson.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            {/* Header */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
             <div className="bg-white shadow rounded-lg p-6 mb-8">
-              <h1 className="text-3xl font-bold text-blue-600 mb-2">
-                {lesson.title}
-              </h1>
+              <h1 className="text-3xl font-bold text-blue-600 mb-2">{lesson.title}</h1>
               <p className="text-sm text-gray-500 mb-4">
                 Level: <span className="font-medium">{lesson.level}</span>
               </p>
               <p className="text-gray-700">{lesson.description}</p>
             </div>
 
-            {/* Nội dung sublessons */}
             <div className="space-y-10">
               {lesson.sublessons
                 .slice()
                 .sort((a, b) => a.sort_order - b.sort_order)
-                .map((block) => (
-                  <SublessonBlock key={block.id} block={block} />
-                ))}
+                .map(block => <SublessonBlock block={block} key={block.id} />)}
             </div>
 
-            {/* Nút làm bài tập / chuyển tiếp */}
             {lesson.unlock_condition === 'exercise' && (
               <div className="text-sm text-red-500 mb-4">
                 ⚠️ Bạn cần hoàn thành bài tập để qua bài này
               </div>
             )}
-
             {lesson.unlock_condition === 'exercise' ? (
               <Button type="primary" size="large" onClick={() => navigate(`/lesson/${lesson.id}/exercise`)}>
                 Làm bài tập
@@ -234,9 +196,7 @@ const LessonPage: React.FC = () => {
             )}
           </motion.div>
         ) : (
-          <EmptyLesson
-            onPromptSidebar={() => navigate('/lesson')}
-          />
+          <EmptyLesson onPromptSidebar={() => navigate('/lesson')} />
         )}
       </Content>
     </Layout>
