@@ -6,7 +6,6 @@ import ChatFixModal from '../../components/ChatFixModal';
 
 export default function WorkspaceScreen() {
   const [code, setCode]       = useState<string>('');
-  const [stdin, setStdin]     = useState<string>('');
   const [output, setOutput]   = useState<string>('');
   const [error, setError]     = useState<string | null>(null);
   const [showFix, setShowFix] = useState(false);
@@ -20,21 +19,14 @@ export default function WorkspaceScreen() {
 
         <PyWorkspace
           initialCode={code}
-          onCodeChange={setCode}      // ← add this line
-          stdin={stdin}
-          onOutput={res => { setOutput(res); setError(null); }}
-          onError={msg => setError(msg)}
+          onCodeChange={setCode}
+          onOutput={(res) => {
+            setOutput(res);
+            setError(null);
+          }}
+          onError={(msg) => setError(msg)}
           timeoutMS={10000}
         />
-
-        {/* External stdin
-        <textarea
-          rows={2}
-          className="w-full p-2 font-mono border rounded resize-none"
-          placeholder="stdin input here..."
-          value={stdin}
-          onChange={e => setStdin(e.target.value)}
-        /> */}
 
         {/* Error & fix */}
         {error && (
