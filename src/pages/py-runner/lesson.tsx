@@ -1,10 +1,17 @@
 // File: src/pages/LessonPage.tsx
 import React, { useState, useEffect, memo } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import { Layout, Spin, Menu, Button } from 'antd';
+import { Layout, Spin, Menu, Button, Space } from 'antd';
+import { Award  } from 'lucide-react';
 import { motion } from 'framer-motion';
 import PythonRunner from '../../components/PythonRunner';
-import { fetchTopics, fetchLessonDetail, markLessonComplete } from '../../services/lessonService';
+import {
+  fetchTopics,
+  fetchLessonDetail,
+  markLessonComplete,
+  checkTopicComplete,
+  issueCertificate,
+} from '../../services/lessonService';
 import EmptyLesson from './empty-lesson';
 
 const { Content, Sider } = Layout;
@@ -25,10 +32,15 @@ interface Lesson {
   sublessons: Sublesson[];
 }
 
+interface LessonItem {
+  id: number;
+  title: string;
+}
+
 interface Topic {
   id: number;
   name: string;
-  lessons: { id: number; title: string }[];
+  lessons: LessonItem[];
 }
 
 const SublessonBlock: React.FC<{ block: Sublesson }> = memo(({ block }) => {
@@ -44,7 +56,10 @@ const SublessonBlock: React.FC<{ block: Sublesson }> = memo(({ block }) => {
       return (
         <motion.div {...sharedProps}>
           <div className="mb-6 border-b border-blue-200">
-            <h2 className="text-3xl font-semibold text-blue-700" dangerouslySetInnerHTML={{ __html: block.content }} />
+            <h2
+              className="text-3xl font-semibold text-blue-700"
+              dangerouslySetInnerHTML={{ __html: block.content }}
+            />
           </div>
         </motion.div>
       );
@@ -52,7 +67,10 @@ const SublessonBlock: React.FC<{ block: Sublesson }> = memo(({ block }) => {
       return (
         <motion.div {...sharedProps}>
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-            <div className="prose prose-gray max-w-none" dangerouslySetInnerHTML={{ __html: block.content }} />
+            <div
+              className="prose prose-gray max-w-none"
+              dangerouslySetInnerHTML={{ __html: block.content }}
+            />
           </div>
         </motion.div>
       );
@@ -64,7 +82,6 @@ const SublessonBlock: React.FC<{ block: Sublesson }> = memo(({ block }) => {
               Mã lệnh Python
             </div>
             <div className="flex-1 h-[300px] overflow-auto">
-              {/* PythonRunner giờ đã tự handle show/hide output */}
               <PythonRunner initialCode={block.content} />
             </div>
           </div>
@@ -77,7 +94,10 @@ const SublessonBlock: React.FC<{ block: Sublesson }> = memo(({ block }) => {
             <div className="mb-2 text-green-700 font-medium text-sm uppercase tracking-wide">
               Ví dụ
             </div>
-            <div className="prose prose-green max-w-none" dangerouslySetInnerHTML={{ __html: block.content }} />
+            <div
+              className="prose prose-green max-w-none"
+              dangerouslySetInnerHTML={{ __html: block.content }}
+            />
           </div>
         </motion.div>
       );
@@ -96,6 +116,13 @@ const LessonPage: React.FC = () => {
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Lưu luôn currentTopic để dùng sau
+  const [currentTopic, setCurrentTopic] = useState<Topic | null>(null);
+
+  // Kiểm tra xem mini-course đã hoàn thành chưa
+  const [topicComplete, setTopicComplete] = useState(false);
+  const [issuing, setIssuing] = useState(false);
+
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -106,26 +133,46 @@ const LessonPage: React.FC = () => {
         if (lessonId) {
           const fetchedLesson = await fetchLessonDetail(lessonId);
           setLesson(fetchedLesson);
+
+          // Tìm topic chứa bài này
+          const topic = fetchedTopics.find((t: Topic) =>
+            t.lessons.some((l: LessonItem) => l.id === fetchedLesson.id)
+          );
+          if (topic) {
+            setCurrentTopic(topic);
+            const complete = await checkTopicComplete(topic.id);
+            console.log('Topic complete?', complete);
+            console.log('checkTopicComplete result:', complete);
+
+            setTopicComplete(complete);
+          }
+          console.log('Fetched lesson:', fetchedLesson);
+          console.log('Topic found:', topic);
+
         } else {
           setLesson(null);
+          setCurrentTopic(null);
+          setTopicComplete(false);
         }
       } catch (err: any) {
         console.error(err);
-        alert(err.message || 'Đã xảy ra lỗi khi tải bài học.');
+        alert(err.message || 'Lỗi khi tải dữ liệu.');
       } finally {
         setLoading(false);
       }
+      
     })();
   }, [lessonId]);
 
   if (loading) {
     return (
       <div className="w-screen h-screen flex items-center justify-center bg-white">
-        <Spin size="large" tip="Đang tải dữ liệu..." />
+        <Spin size="large" tip="Đang tải..." />
       </div>
     );
   }
 
+  // Xây menu bên trái
   const sidebarItems = topics.map(topic => ({
     key: `topic-${topic.id}`,
     label: topic.name,
@@ -135,18 +182,31 @@ const LessonPage: React.FC = () => {
     })),
   }));
 
+  // Khi bấm hoàn thành bài và chuyển tiếp
   const handleCompleteAndNext = async () => {
-    if (!lesson) return;
+    if (!lesson || !currentTopic) return;
     try {
       await markLessonComplete(lesson.id);
-      const currentTopic = topics.find(t => t.lessons.some(l => l.id === lesson.id));
-      if (!currentTopic) return;
-      const idx = currentTopic.lessons.findIndex(l => l.id === lesson.id);
-      const next = currentTopic.lessons[idx + 1];
+      const idx = currentTopic!.lessons.findIndex(l => l.id === lesson.id);
+      const next = currentTopic!.lessons[idx + 1];
       if (next) navigate(`/lesson/${next.id}`);
       else alert('🎉 Bạn đã hoàn thành toàn bộ chủ đề này!');
     } catch {
       alert('Lỗi khi ghi nhận hoàn thành bài học.');
+    }
+  };
+
+  // Issue certificate
+  const handleIssueCertificate = async () => {
+    if (!currentTopic) return;
+    try {
+      setIssuing(true);
+      const url = await issueCertificate(currentTopic.id);
+      window.open(url, '_blank');
+    } catch (err: any) {
+      alert(err.message || 'Không thể tạo chứng chỉ.');
+    } finally {
+      setIssuing(false);
     }
   };
 
@@ -164,36 +224,62 @@ const LessonPage: React.FC = () => {
 
       <Content className="overflow-auto p-6 lg:p-8 bg-gray-50">
         {lesson ? (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            {/* Tiêu đề + mô tả */}
             <div className="bg-white shadow rounded-lg p-6 mb-8">
-              <h1 className="text-3xl font-bold text-blue-600 mb-2">{lesson.title}</h1>
+              <h1 className="text-3xl font-bold text-blue-600 mb-2">
+                {lesson.title}
+              </h1>
               <p className="text-sm text-gray-500 mb-4">
                 Level: <span className="font-medium">{lesson.level}</span>
               </p>
               <p className="text-gray-700">{lesson.description}</p>
             </div>
 
+            {/* Nội dung con */}
             <div className="space-y-10">
               {lesson.sublessons
-                .slice()
                 .sort((a, b) => a.sort_order - b.sort_order)
                 .map(block => <SublessonBlock block={block} key={block.id} />)}
             </div>
 
-            {lesson.unlock_condition === 'exercise' && (
-              <div className="text-sm text-red-500 mb-4">
-                ⚠️ Bạn cần hoàn thành bài tập để qua bài này
-              </div>
-            )}
-            {lesson.unlock_condition === 'exercise' ? (
-              <Button type="primary" size="large" onClick={() => navigate(`/lesson/${lesson.id}/exercise`)}>
-                Làm bài tập
-              </Button>
-            ) : (
-              <Button type="default" size="large" onClick={handleCompleteAndNext}>
-                Bài tiếp theo
-              </Button>
-            )}
+            {/* Nút chức năng */}
+            <div className="mt-6">
+              <Space size="middle">
+                {lesson.unlock_condition === 'exercise' ? (
+                  <Button
+                    type="primary"
+                    size="large"
+                    onClick={() => navigate(`/lesson/${lesson.id}/exercise`)}
+                  >
+                    Làm bài tập
+                  </Button>
+                ) : (
+                  <Button
+                    type="default"
+                    size="large"
+                    onClick={handleCompleteAndNext}
+                  >
+                    Bài tiếp theo
+                  </Button>
+                )}
+
+                {topicComplete && (
+                  <Button
+                    type="default"
+                    icon={<Award  />}
+                    onClick={handleIssueCertificate}
+                    loading={issuing}
+                  >
+                    Nhận chứng chỉ
+                  </Button>
+                )}
+              </Space>
+            </div>
           </motion.div>
         ) : (
           <EmptyLesson onPromptSidebar={() => navigate('/lesson')} />

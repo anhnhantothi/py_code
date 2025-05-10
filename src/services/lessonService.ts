@@ -44,3 +44,34 @@ export async function markLessonComplete(lessonId: number) {
     throw new Error(error.message || 'Failed to mark complete');
   }
 }
+
+export async function checkTopicComplete(topicId: number): Promise<boolean> {
+  const resp = await fetch(`http://localhost:5000/certificate/status?topic_id=${topicId}`, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json();
+    throw new Error(err.error || 'Error checking certificate status');
+  }
+
+  const data = await resp.json();
+  return Boolean(data.complete);
+}
+
+
+export async function issueCertificate(topicId: number): Promise<string> {
+  const resp = await fetch('http://localhost:5000/certificate/issue', {
+    method: 'POST',
+    headers: {
+      'Content-Type':  'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+    body: JSON.stringify({ topic_id: topicId }),
+  });
+  const data = await resp.json();
+  if (!resp.ok) throw new Error(data.error || 'Error issuing certificate');
+  return data.url as string;
+}
