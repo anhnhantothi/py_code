@@ -13,6 +13,7 @@ import {
   issueCertificate,
 } from '../../services/lessonService';
 import EmptyLesson from './empty-lesson';
+import CertificatePreviewModal from '../../components/CertificatePreviewModal';
 
 const { Content, Sider } = Layout;
 
@@ -123,6 +124,10 @@ const LessonPage: React.FC = () => {
   const [topicComplete, setTopicComplete] = useState(false);
   const [issuing, setIssuing] = useState(false);
 
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState<string>('');
+
+
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -202,7 +207,8 @@ const LessonPage: React.FC = () => {
     try {
       setIssuing(true);
       const url = await issueCertificate(currentTopic.id);
-      window.open(url, '_blank');
+      setPdfUrl(url);
+      setPreviewVisible(true);
     } catch (err: any) {
       alert(err.message || 'Không thể tạo chứng chỉ.');
     } finally {
@@ -279,6 +285,11 @@ const LessonPage: React.FC = () => {
                   </Button>
                 )}
               </Space>
+              <CertificatePreviewModal
+                visible={previewVisible}
+                pdfUrl={pdfUrl}
+                onCancel={() => setPreviewVisible(false)}
+              />
             </div>
           </motion.div>
         ) : (

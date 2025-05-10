@@ -20,7 +20,7 @@ const CertificatePreviewModal: React.FC<CertificatePreviewModalProps> = ({
       footer={null}
       width="80vw"
       style={{ top: 20 }}
-      bodyStyle={{ height: '80vh', padding: 0 }}
+      styles={{body: { height: '80vh', padding: 0 }}}
       destroyOnClose
     >
       {pdfUrl ? (

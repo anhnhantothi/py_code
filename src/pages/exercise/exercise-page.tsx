@@ -84,8 +84,11 @@ const ExercisePage: React.FC = () => {
                   <span className="text-lg font-semibold">📝 Bài Tập</span>
                 </div>
               }
-              headStyle={{ borderBottom: 'none' }}
-              bodyStyle={{ padding: '1.5rem' }}
+              // headStyle={{ borderBottom: 'none' }}
+              styles={{
+                header: { borderBottom: 'none' },
+                body: { padding: '1.5rem' }
+              }}
               className="rounded-xl shadow-md"
             >
               <h2 className="text-indigo-600 text-xl font-semibold mb-2">
@@ -108,8 +111,10 @@ const ExercisePage: React.FC = () => {
           <Col xs={24} md={14}>
             <Card
               title="💻 Trình Soạn Thảo Code"
-              headStyle={{ borderBottom: 'none', fontSize: '1.1rem' }}
-              bodyStyle={{ padding: '1rem', display: 'flex', flexDirection: 'column', height: '100%' }}
+              styles={{
+                header: { borderBottom: 'none' , fontSize: '1.1rem' },
+                body: { padding: '1rem', display: 'flex', flexDirection: 'column', height: '100%' }
+              }}
               className="rounded-xl shadow-md"
             >
               <div className="flex-1 overflow-auto mb-4">
