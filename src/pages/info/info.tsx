@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TabView, TabPanel } from "primereact/tabview";
 import { InputText } from "primereact/inputtext";
 import { PencilIcon, CheckIcon } from "lucide-react";
+import CommentArea from "../../components/CommentArea";
 
 const PatientProfileUI = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -50,7 +51,6 @@ const PatientProfileUI = () => {
           {isEditing ? <CheckIcon size={20} className="text-green-600" /> : <PencilIcon size={20} className="text-gray-700" />}
         </div>
       </div>
-
       {/* Tabs Section */}
       <div className="shadow-[0_6px_15px_rgba(0,0,0,0.15)] p-5">
         <div className="flex border-b mb-6">
