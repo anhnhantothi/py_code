@@ -1,7 +1,7 @@
 /* File: src/components/PythonRunner.tsx */
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from 'antd';
-import ChatFixModal from './ChatFixModal';
+// import ChatFixModal from './ChatFixModal';
 
 interface PythonRunnerProps {
   initialCode?: string;

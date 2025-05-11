@@ -1,60 +1,72 @@
 body {
-    margin: 0;
-    padding: 0;
-    background: #e0e5ec;
-    font-family: Arial, sans-serif;
-  }
-  
-  .login-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: #e0e5ec;
-  }
-  
-  .neumorphic-card {
-    background: #e0e5ec;
-    border-radius: 20px;
-    box-shadow: 10px 10px 20px #a3b1c6, -10px -10px 20px #ffffff;
-    padding: 40px 30px;
-    width: 520px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .neumorphic-card h1 {
-    margin-bottom: 30px;
-    color: #333;
-  }
-  
-  .neumorphic-input {
-    background: #e0e5ec;
-    border: none;
-    border-radius: 20px;
-    padding: 10px 15px;
-    width: 100%;
-    margin-bottom: 20px;
-    box-shadow: inset 5px 5px 10px #a3b1c6, inset -5px -5px 10px #ffffff;
-    font-size: 14px;
-    color: #333;
-    outline: none;
-  }
-  
-  .neumorphic-button {
-    background: #e0e5ec;
-    border-radius: 20px;
-    padding: 10px 0;
-    width: 100%;
-    font-weight: bold;
-    box-shadow: 10px 10px 20px #a3b1c6, -10px -10px 20px #ffffff;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s ease;
-  }
-  
-  .neumorphic-button:hover {
-    box-shadow: inset 10px 10px 20px #a3b1c6, inset -10px -10px 20px #ffffff;
-  }
-  
+  margin: 0;
+  padding: 0;
+  background: #f8fafc; /* sáng hơn nhiều */
+  font-family: Arial, sans-serif;
+}
+
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f8fafc; /* cùng tone sáng */
+}
+
+.neumorphic-card {
+  background: #ffffff; /* trắng sáng */
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* bỏ neumorphic, dùng soft shadow */
+  padding: 40px 30px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.neumorphic-card h1 {
+  margin-bottom: 30px;
+  color: #111827; /* dark text */
+}
+
+.neumorphic-input {
+  background: #f9fafb; /* trắng xám nhẹ */
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 15px;
+  width: 100%;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.neumorphic-input:focus {
+  border-color: #6366f1; /* indigo (LeetCode-like) */
+}
+
+.neumorphic-button {
+  background: #6366f1; /* indigo */
+  color: white;
+  border-radius: 8px;
+  padding: 10px 0;
+  width: 100%;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.neumorphic-button:hover {
+  background: #4f46e5;
+}
+
+a {
+  color: #6366f1;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

@@ -57,17 +57,18 @@ const Workspace: React.FC = () => {
         <header className="flex items-center justify-between px-4 py-2 border-b bg-gray-100">
           <span className="text-purple-600 font-semibold">main.py</span>
           <div className="flex items-center space-x-2">
-            {error && (
-              <div className="mt-2 text-sm text-red-600">
-                {/* <p className="mb-2 whitespace-pre-wrap font-mono">{error}</p> */}
+          {/* Hiện nút sửa lỗi AI nếu lỗi không phải do chặn mã độc */}
+            {error &&
+              !error.includes('🚫') &&
+              !error.includes('⏰') && (
                 <button
                   onClick={() => setShowFix(true)}
-                  className="text-blue-600  hover:text-blue-800"
+                  className="text-blue-600 underline hover:text-blue-800 text-sm"
                 >
                   🛠 Fix Code
                 </button>
-              </div>
             )}
+
 
             <button title="Save" className="hover:bg-gray-200 p-1 rounded">💾</button>
             <button title="Settings" className="hover:bg-gray-200 p-1 rounded">⚙️</button>
@@ -115,13 +116,23 @@ const Workspace: React.FC = () => {
         >
           {loading ? 'Running…' : '▶ RUN'}
         </button>
-
         <div className="flex-1 flex flex-col">
           <label className="text-xs font-semibold text-gray-600">Output</label>
+
+          {/* Hiện lỗi nếu có */}
+          {error && (
+            <div className="text-sm text-red-600 whitespace-pre-wrap font-mono mb-2">
+              {error}
+            </div>
+          )}
+
+          {/* Chỉ hiện output nếu không phải lỗi bị chặn mã độc */}
           <div className="flex-1 p-3 mt-1 overflow-auto bg-white border rounded font-mono text-sm text-gray-800 whitespace-pre-wrap">
-            {output}
+            {!error?.includes('🚫') && output}
           </div>
+
         </div>
+
       </div>
       <ChatFixModal
         visible={showFix}

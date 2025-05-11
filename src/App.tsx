@@ -2,7 +2,7 @@
 import { Routes, Route } from 'react-router-dom';
 import NavigationMenu from './components/navigationMenu';
 import Workspace from './pages/work-space/workspace';
-import DocumentationPage from './pages/documents/document';
+// import DocumentationPage from './pages/pratice/SearchSuggestionCard';
 // import Lesson from './pages/py-runner/lesson';
 import HomePage from './pages/home/home-page';
 
@@ -11,6 +11,7 @@ import RegisterPage from './pages/register/register-page';
 import LessonPage from './pages/py-runner/lesson';
 import ExercisePage from './pages/exercise/exercise-page';
 import PatientProfileUI from './pages/info/info';
+import PracticePage from './pages/pratice/PracticePage';
 
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
         <Route path="/lesson" element={<LessonPage />} />
         <Route path="/info" element={<PatientProfileUI />} />
         <Route path="/lesson/:lessonId" element={<LessonPage />} />
-        <Route path="/document" element={<DocumentationPage />} />
+        <Route path="/pratice" element={<PracticePage />} />
         <Route path="/workspace" element={<Workspace />} />
         <Route path="/lesson/:lessonId/exercise" element={<ExercisePage />} />
         {/* <Route path="/exercise/:lessonId" element={<ExercisePage />} /> */}
