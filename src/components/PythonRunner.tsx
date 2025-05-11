@@ -110,7 +110,7 @@ const PythonRunner: React.FC<PythonRunnerProps> = ({
             {showLintButton && <Button disabled={!hasError} onClick={() => setChatVisible(true)}>Sửa lỗi</Button>}
           </div>
 
-          {chatVisible && <ChatFixModal visible={chatVisible} code={code} onClose={() => setChatVisible(false)} />}
+          {/* {chatVisible && <ChatFixModal visible={chatVisible} code={code} onClose={() => setChatVisible(false)} />} */}
 
           {/* Output chỉ hiển thị sau khi nhấn run */}
           {showOutput && (

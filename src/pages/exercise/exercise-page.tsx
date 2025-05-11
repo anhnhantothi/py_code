@@ -5,6 +5,7 @@ import { Row, Col, Card, Button, Alert, message, Spin } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import PythonRunner from '../../components/PythonRunner';
 import { fetchExercise, Exercise, submitExercise } from '../../services/exerciseService';
+import CommentSection from '../../components/CommentArea';
 
 const ExercisePage: React.FC = () => {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -106,6 +107,7 @@ const ExercisePage: React.FC = () => {
                 </div>
               )}
             </Card>
+            <div className='pt-5'><CommentSection/></div>
           </Col>
 
           <Col xs={24} md={14}>

@@ -8,7 +8,7 @@ import { useAuth } from '../context/auth_context';
 const menuItems = [
   { label: <Link to="/">Home</Link>, key: '/', icon: <HomeOutlined /> },
   { label: <Link to="/lesson">Lesson</Link>, key: '/lesson', icon: <BookOutlined /> },
-  { label: <Link to="/document">Document</Link>, key: '/document', icon: <FileTextOutlined /> },
+  { label: <Link to="/document">Practice</Link>, key: '/document', icon: <FileTextOutlined /> },
   { label: <Link to="/workspace">Workspace</Link>, key: '/workspace', icon: <CodeOutlined /> },
 ];
 

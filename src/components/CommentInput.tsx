@@ -12,7 +12,7 @@ const CommentInputBox: React.FC<CommentInputProps> = ({ handleCommentSubmit }) =
     return (
         <div className="flex-col items-start gap-3 mb-4">
             <div className='flex'>
-                <Avatar label={"0".charAt(0).toUpperCase()} className="bg-blue-600 text-white w-12 h-12 mr-4" />
+                <Avatar label={"a".charAt(0).toUpperCase()} className="bg-blue-600 text-white w-12 h-12 mr-4" />
                 <div className="flex-1">
                     <textarea
                         value={newComment}

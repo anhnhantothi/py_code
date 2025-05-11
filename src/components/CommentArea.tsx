@@ -18,7 +18,7 @@ const CommentSection = () => {
             const newId = comments.length + 1;
             const newCommentData :CommentDto= {
                 id: newId,
-                name: '0342247464',
+                name: 'Ánh Nhàn',
                 time: 'vừa xong',
                 content: newComment.trim(),
                 likes: 0,
