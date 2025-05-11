@@ -3,6 +3,7 @@ import { TabView, TabPanel } from "primereact/tabview";
 import { InputText } from "primereact/inputtext";
 import { PencilIcon, CheckIcon } from "lucide-react";
 import CommentArea from "../../components/CommentArea";
+import { fakeData, SearchSuggestionCard } from "../../components/PraticeItem";
 
 const PatientProfileUI = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -66,6 +67,10 @@ const PatientProfileUI = () => {
             </div>
           ))}
         </div>
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      
+    </div>
+
         {activeTab === 0 ? (
           <div className="grid grid-cols-2 gap-6 mb-6">
             {Object.entries(patientData).map(([key, value]) => (
