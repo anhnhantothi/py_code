@@ -10,6 +10,7 @@ import LoginPage from './pages/login/login-page';
 import RegisterPage from './pages/register/register-page';
 import LessonPage from './pages/py-runner/lesson';
 import ExercisePage from './pages/exercise/exercise-page';
+import PatientProfileUI from './pages/info/info';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/lesson" element={<LessonPage />} />
+        <Route path="/info" element={<PatientProfileUI />} />
         <Route path="/lesson/:lessonId" element={<LessonPage />} />
         <Route path="/document" element={<DocumentationPage />} />
         <Route path="/workspace" element={<Workspace />} />

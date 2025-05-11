@@ -5,13 +5,16 @@ import App from './App.tsx'
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './context/auth_context.tsx'
+import { PrimeReactProvider } from 'primereact/api';
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-      <BrowserRouter>
+    <PrimeReactProvider>
+    <BrowserRouter>
         <AuthProvider>
           <App />
         </AuthProvider>
       </BrowserRouter>
+    </PrimeReactProvider>
   </React.StrictMode>
 )
