@@ -1,12 +1,13 @@
-import { SearchSuggestionCard, SearchSuggestionCardProps, Difficulty } from './SearchSuggestionCard';
+import { SearchSuggestionCard, SearchSuggestion, Difficulty } from './SearchSuggestionCard';
 
-export const fakeData: SearchSuggestionCardProps[] = [
+export const fakeData: SearchSuggestion[] = [
   {
     title: "maxIncreaseSubArr...",
     difficulty: Difficulty.De,
     tags: ["Algorithm", "Array", "Training"],
     completionRate: 92.5,
     likes: 100,
+    id: 0
   },
   {
     title: "typeOfTriangle",
@@ -14,6 +15,8 @@ export const fakeData: SearchSuggestionCardProps[] = [
     tags: ["Geometry", "Algorithm"],
     completionRate: 89.8,
     likes: 100,
+    id: 1,
+    active:true
   },
   {
     title: "soloBingoGame",
@@ -21,6 +24,7 @@ export const fakeData: SearchSuggestionCardProps[] = [
     tags: ["game", "Training"],
     completionRate: 92.5,
     likes: 150,
+    id: 2
   },
 ];
 

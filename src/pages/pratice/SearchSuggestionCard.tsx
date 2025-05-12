@@ -1,12 +1,14 @@
 import React from 'react';
 import { User2Icon, HeartIcon } from 'lucide-react';
 
-export interface SearchSuggestionCardProps {
+export interface SearchSuggestion {
+  id:number;
   title: string;
   difficulty: Difficulty;
   tags: string[];
   completionRate: number;
   likes?: number;
+  active?:boolean
 }
 
 export enum Difficulty {
@@ -15,31 +17,33 @@ export enum Difficulty {
   Kho = "Khó",
 }
 
-export const SearchSuggestionCard: React.FC<SearchSuggestionCardProps> = ({
+export const  getDifficultyColor = (difficulty:Difficulty) => {
+  switch (difficulty) {
+    case Difficulty.De:
+      return 'bg-green-500 text-white';
+    case Difficulty.TrungBinh:
+      return 'bg-orange-400 text-white';
+    case Difficulty.Kho:
+      return 'bg-red-500 text-white';
+    default:
+      return 'bg-gray-300 text-black';
+  }
+};
+
+export const SearchSuggestionCard: React.FC<SearchSuggestion> = ({
   title,
   difficulty,
   tags,
   completionRate,
   likes = 100,
 }) => {
-  const getDifficultyColor = () => {
-    switch (difficulty) {
-      case Difficulty.De:
-        return 'bg-green-500 text-white';
-      case Difficulty.TrungBinh:
-        return 'bg-orange-400 text-white';
-      case Difficulty.Kho:
-        return 'bg-red-500 text-white';
-      default:
-        return 'bg-gray-300 text-black';
-    }
-  };
+
 
   return (
     <div className="w-64 p-4 bg-white rounded-xl shadow-md border border-gray-200 flex flex-col gap-3 hover:scale-105 hover:shadow-xl transition-transform duration-200">
       <div className="flex flex-col gap-2">
         <h3 className="text-base font-semibold text-blue-900 truncate">{title}</h3>
-        <div className={`w-fit px-3 py-1 text-xs font-semibold rounded-full ${getDifficultyColor()}`}>
+        <div className={`w-fit px-3 py-1 text-xs font-semibold rounded-full ${getDifficultyColor(difficulty)}`}>
           {difficulty}
         </div>
       </div>

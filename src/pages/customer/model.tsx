@@ -14,7 +14,7 @@ export interface User {
     startDate: Date | null;
     lastOnl: Date | null;
     isAdmin:boolean;
-    vip:number;
+    vip:boolean;
     enabled :boolean;
   }
 
@@ -47,7 +47,7 @@ export interface User {
         lastOnl: faker.date.recent(),
     enabled: faker.datatype.boolean(),
     isAdmin: faker.datatype.boolean(),
-    vip: faker.number.int({ min: 0, max: 5 }),
+    vip:faker.datatype.boolean(),
   });
 
 

@@ -15,6 +15,7 @@ import PracticePage from './pages/pratice/PracticePage';
 import CustomerManage from './pages/customer/customer';
 import PermissionManage from './pages/permission/permission';
 import DashboardPage from './pages/dashboard/dashboard';
+import PracticeManage from './pages/practice/practice';
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
         <Route path="/customer" element={<CustomerManage />} />
         <Route path="/permission" element={<PermissionManage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/practice-management" element={<PracticeManage />} />
 
         {/* <Route path="/exercise/:lessonId" element={<ExercisePage />} /> */}
       </Routes>
