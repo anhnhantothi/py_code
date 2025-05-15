@@ -38,6 +38,7 @@ const PatientProfileUI = () => {
   }, []);
 
   const handleChange = (e: any) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
     setPatientData((prevData) => ({ ...prevData, [name]: value }));
   };
@@ -126,7 +127,22 @@ const PatientProfileUI = () => {
           </div>
         ) : (
           <div className="text-gray-700">
-            <p>Current process details go here...</p>
+           {
+            <div className="">
+            {fakeTopics.map((topic) => (
+              <Card key={topic.id} className="mb-6 shadow-md p-1 bg-white rounded-2xl">
+                <h2 className="text-xl font-semibold mb-4">{topic.name}</h2>
+                <ul className="list-disc list-inside">
+                  {topic.lessons.map((lesson) => (
+                    <li key={lesson.id} className={`mb-2 ${lesson.id <4 ? "text-gray-500 line-through":"text-black"}`}>
+                      {lesson.title} 
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            ))}
+          </div>
+           }
           </div>
         )}
       </div>

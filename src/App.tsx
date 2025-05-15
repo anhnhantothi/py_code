@@ -12,6 +12,10 @@ import LessonPage from './pages/py-runner/lesson';
 import ExercisePage from './pages/exercise/exercise-page';
 import PatientProfileUI from './pages/info/info';
 import PracticePage from './pages/pratice/PracticePage';
+import CustomerManage from './pages/customer/customer';
+import PermissionManage from './pages/permission/permission';
+import DashboardPage from './pages/dashboard/dashboard';
+import PracticeManage from './pages/practice/practice';
 
 
 function App() {
@@ -30,6 +34,11 @@ function App() {
         <Route path="/pratice" element={<PracticePage />} />
         <Route path="/workspace" element={<Workspace />} />
         <Route path="/lesson/:lessonId/exercise" element={<ExercisePage />} />
+        <Route path="/customer" element={<CustomerManage />} />
+        <Route path="/permission" element={<PermissionManage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/practice-management" element={<PracticeManage />} />
+
         {/* <Route path="/exercise/:lessonId" element={<ExercisePage />} /> */}
       </Routes>
     </div>

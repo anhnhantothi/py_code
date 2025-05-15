@@ -1,6 +1,6 @@
-import { SearchSuggestionCard, SearchSuggestionCardProps, Difficulty } from './SearchSuggestionCard';
+import { SearchSuggestionCard, SearchSuggestion, Difficulty } from './SearchSuggestionCard';
 
-export const fakeData: SearchSuggestionCardProps[] = [
+export const fakeData: SearchSuggestion[] = [
   {
     title: "helloWorldPython",
     difficulty: Difficulty.De,
@@ -56,6 +56,8 @@ export const fakeData: SearchSuggestionCardProps[] = [
     tags: ["Regex", "Text Processing", "Advanced"],
     completionRate: 75.0,
     likes: 100,
+    id: 1,
+    active:true
   },
   {
     title: "buildSimpleCalculator",
