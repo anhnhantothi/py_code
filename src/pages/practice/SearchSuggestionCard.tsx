@@ -1,5 +1,7 @@
 import React from 'react';
 import { User2Icon, HeartIcon } from 'lucide-react';
+import { Difficulty } from './difficultyEnum';
+import { Link } from 'react-router-dom';
 
 export interface SearchSuggestionCardProps {
   title: string;
@@ -7,13 +9,10 @@ export interface SearchSuggestionCardProps {
   tags: string[];
   completionRate: number;
   likes?: number;
+  slug: string;
 }
 
-export enum Difficulty {
-  De = "Dễ",
-  TrungBinh = "Trung Bình",
-  Kho = "Khó",
-}
+
 
 export const SearchSuggestionCard: React.FC<SearchSuggestionCardProps> = ({
   title,
@@ -21,6 +20,7 @@ export const SearchSuggestionCard: React.FC<SearchSuggestionCardProps> = ({
   tags,
   completionRate,
   likes = 100,
+  slug,
 }) => {
   const getDifficultyColor = () => {
     switch (difficulty) {
@@ -34,8 +34,12 @@ export const SearchSuggestionCard: React.FC<SearchSuggestionCardProps> = ({
         return 'bg-gray-300 text-black';
     }
   };
+  console.log("Card:", title, "Slug:", slug);
 
   return (
+    
+    <Link to={`/practice/${slug}`}>
+    
     <div className="w-64 p-4 bg-white rounded-xl shadow-md border border-gray-200 flex flex-col gap-3 hover:scale-105 hover:shadow-xl transition-transform duration-200">
       <div className="flex flex-col gap-2">
         <h3 className="text-base font-semibold text-blue-900 truncate">{title}</h3>
@@ -66,5 +70,6 @@ export const SearchSuggestionCard: React.FC<SearchSuggestionCardProps> = ({
         </div>
       </div>
     </div>
+    </Link>
   );
 };

@@ -11,7 +11,8 @@ import RegisterPage from './pages/register/register-page';
 import LessonPage from './pages/py-runner/lesson';
 import ExercisePage from './pages/exercise/exercise-page';
 import PatientProfileUI from './pages/info/info';
-import PracticePage from './pages/pratice/PracticePage';
+import PracticePage from './pages/practice/PracticePage';
+import PracticeDetailPage from './pages/practice/PracticeDetailPage';
 
 
 function App() {
@@ -27,9 +28,11 @@ function App() {
         <Route path="/lesson" element={<LessonPage />} />
         <Route path="/info" element={<PatientProfileUI />} />
         <Route path="/lesson/:lessonId" element={<LessonPage />} />
-        <Route path="/pratice" element={<PracticePage />} />
+        <Route path="/practice" element={<PracticePage />} />
+        <Route path="/practice/:slug" element={<PracticeDetailPage />} />
         <Route path="/workspace" element={<Workspace />} />
         <Route path="/lesson/:lessonId/exercise" element={<ExercisePage />} />
+
         {/* <Route path="/exercise/:lessonId" element={<ExercisePage />} /> */}
       </Routes>
     </div>
