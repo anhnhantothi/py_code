@@ -10,9 +10,6 @@ export interface LoginResponse {
   error?: string;
 }
 
-/**
- * Gửi request đăng nhập tới backend và trả kết quả.
- */
 export async function login(
   credentials: LoginCredentials,
   loginContextFn: (username: string) => void  //truyền thêm hàm login từ context
@@ -29,7 +26,7 @@ export async function login(
     // localStorage.setItem('token', data.token);
     localStorage.setItem('token', data.access_token);
     localStorage.setItem('username', credentials.username);
-    loginContextFn(credentials.username); // ✅ cập nhật AuthContext
+    loginContextFn(credentials.username); 
     return { success: true };
   } else {
     return { success: false, error: data.error || 'Login failed' };
