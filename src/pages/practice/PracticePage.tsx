@@ -5,33 +5,20 @@ import { SearchSuggestionCard, SearchSuggestion } from './SearchSuggestionCard';
 import { fetchPractices } from '../../services/practiceService';
 import { Difficulty } from './difficultyEnum';
 
-const convertDifficulty = (level: string): Difficulty => {
-  switch (level) {
-    case 'EASY':
-      return Difficulty.De;
-    case 'MEDIUM':
-      return Difficulty.TrungBinh;
-    case 'HARD':
-      return Difficulty.Kho;
-    default:
-      return Difficulty.De;
-  }
-};
-
 export default function PracticePage() {
   const [data, setData] = useState<SearchSuggestion[]>([]);
-  const [filter, setFilter] = useState<string>('');
+  const [filter, setFilter] = useState<string>('');  // giữ filter là string 'EASY' | 'MEDIUM' | 'HARD'
   const [search, setSearch] = useState<string>('');
 
   useEffect(() => {
     const loadData = async () => {
-      const result = await fetchPractices();
+      const result = await fetchPractices(); 
       const mapped = result.map((item: any, index: number): SearchSuggestion => ({
         id: item.id ?? index,
         active: item.active ?? true,
         title: item.title,
         slug: item.slug,
-        difficulty: convertDifficulty(item.difficulty),
+        difficulty: item.difficulty, 
         tags: item.tags || [],
         completionRate: item.completionRate || 0,
         likes: item.likes || 0,
@@ -41,8 +28,15 @@ export default function PracticePage() {
     loadData();
   }, []);
 
+  // map từ filter string sang enum
+  const filterMap: Record<string, Difficulty> = {
+    EASY: Difficulty.De,
+    MEDIUM: Difficulty.TrungBinh,
+    HARD: Difficulty.Kho,
+  };
+
   const filteredData = data.filter(item =>
-    (!filter || item.difficulty === convertDifficulty(filter)) &&
+    (!filter || item.difficulty === filterMap[filter]) &&
     item.title.toLowerCase().includes(search.toLowerCase())
   );
 

@@ -5,6 +5,7 @@ import { User2Icon, HeartIcon } from 'lucide-react';
 import { Difficulty } from './difficultyEnum';
 import { Link } from 'react-router-dom';
 
+// Dữ liệu đầy đủ từ backend
 export interface SearchSuggestion {
   active: boolean;
   id: number;
@@ -16,7 +17,17 @@ export interface SearchSuggestion {
   slug: string;
 }
 
-export const SearchSuggestionCard: React.FC<SearchSuggestion> = ({
+
+export interface SearchSuggestionCardProps {
+  title: string;
+  difficulty: Difficulty;
+  tags: string[];
+  completionRate: number;
+  likes?: number;
+  slug: string;
+}
+
+export const SearchSuggestionCard: React.FC<SearchSuggestionCardProps> = ({
   title,
   difficulty,
   tags,
@@ -36,6 +47,7 @@ export const SearchSuggestionCard: React.FC<SearchSuggestion> = ({
         return 'bg-gray-300 text-black';
     }
   };
+
 
   return (
     <Link to={`/practice/${slug}`}>

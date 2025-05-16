@@ -4,7 +4,7 @@ import {  SearchSuggestionCardProps } from '../pages/practice/SearchSuggestionCa
 import { Difficulty } from '../pages/practice/difficultyEnum';
 
 const convertDifficulty = (raw: string): Difficulty => {
-  switch (raw) {
+  switch (raw.trim().toUpperCase()) {
     case 'EASY':
       return Difficulty.De;
     case 'MEDIUM':
