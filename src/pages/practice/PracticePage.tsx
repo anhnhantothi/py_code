@@ -1,7 +1,10 @@
+// src/pages/practice/PracticePage.tsx
+
 import { useEffect, useState } from 'react';
-import { SearchSuggestionCard, SearchSuggestionCardProps } from './SearchSuggestionCard';
+import { SearchSuggestionCard, SearchSuggestion } from './SearchSuggestionCard';
 import { fetchPractices } from '../../services/practiceService';
 import { Difficulty } from './difficultyEnum';
+
 const convertDifficulty = (level: string): Difficulty => {
   switch (level) {
     case 'EASY':
@@ -16,19 +19,28 @@ const convertDifficulty = (level: string): Difficulty => {
 };
 
 export default function PracticePage() {
-  const [data, setData] = useState<SearchSuggestionCardProps[]>([]);
+  const [data, setData] = useState<SearchSuggestion[]>([]);
+  const [filter, setFilter] = useState<string>('');
+  const [search, setSearch] = useState<string>('');
+
   useEffect(() => {
     const loadData = async () => {
       const result = await fetchPractices();
-      setData(result);
-      console.log('Dữ liệu bài tập:', result);
+      const mapped = result.map((item: any, index: number): SearchSuggestion => ({
+        id: item.id ?? index,
+        active: item.active ?? true,
+        title: item.title,
+        slug: item.slug,
+        difficulty: convertDifficulty(item.difficulty),
+        tags: item.tags || [],
+        completionRate: item.completionRate || 0,
+        likes: item.likes || 0,
+      }));
+      setData(mapped);
     };
-    console.log('Dữ liệu bài tập:', filteredData);
     loadData();
-    }, []);
-  
-  const [filter, setFilter] = useState<string>('');
-  const [search, setSearch] = useState<string>('');
+  }, []);
+
   const filteredData = data.filter(item =>
     (!filter || item.difficulty === convertDifficulty(filter)) &&
     item.title.toLowerCase().includes(search.toLowerCase())
@@ -59,15 +71,10 @@ export default function PracticePage() {
         <div className="bg-white rounded-xl shadow-md p-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Practice Problems</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredData.map((problem, index) => (
+            {filteredData.map((problem) => (
               <SearchSuggestionCard
-                key={index}
-                title={problem.title}
-                slug={problem.slug} 
-                difficulty={problem.difficulty}
-                tags={problem.tags}
-                completionRate={problem.completionRate}
-                likes={problem.likes}
+                key={problem.id}
+                {...problem}
               />
             ))}
           </div>

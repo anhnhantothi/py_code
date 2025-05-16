@@ -1,6 +1,7 @@
 import  { useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { PencilIcon, CheckIcon } from "lucide-react";
+import { Card } from "antd";
 
 // Giả sử bạn có sẵn helper cho fetch API
 const getPatientProfile = async () => {
@@ -18,6 +19,25 @@ const updatePatientProfile = async (data: any) => {
   if (!response.ok) throw new Error("Failed to update patient profile");
   return await response.json();
 };
+const fakeTopics = [
+  {
+    id: 1,
+    name: "Chủ đề 1: Nhập môn Python",
+    lessons: [
+      { id: 1, title: "Biến và kiểu dữ liệu" },
+      { id: 2, title: "Câu lệnh điều kiện" },
+      { id: 3, title: "Vòng lặp" },
+    ],
+  },
+  {
+    id: 2,
+    name: "Chủ đề 2: Hàm và cấu trúc dữ liệu",
+    lessons: [
+      { id: 4, title: "Hàm trong Python" },
+      { id: 5, title: "List và Tuple" },
+    ],
+  },
+];
 
 const PatientProfileUI = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -37,11 +57,11 @@ const PatientProfileUI = () => {
       .catch((err) => console.error(err));
   }, []);
 
+
   const handleChange = (e: any) => {
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setPatientData((prevData) => ({ ...prevData, [name]: value }));
-  };
+  const { name, value } = e.target;
+  setPatientData((prevData) => ({ ...prevData, [name]: value }));
+};
 
   const toggleEdit = async () => {
     if (isEditing) {
