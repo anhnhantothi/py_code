@@ -4,7 +4,7 @@ import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
-import { ConfirmDialog } from 'primereact/confirmdialog';
+import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
 import moment from 'moment';
 import debounce from 'lodash.debounce';
 import { paginatorTemplate, rowsPerPageOptions } from '../../untils/common';
@@ -12,11 +12,13 @@ import { generateFakeUsers, User } from '../customer/model';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { CheckIcon, Trash } from 'lucide-react';
+import { useToast } from '../../contexts/ToastContext';
 
 
 
 export default function PermissionManage() {
     const [customers, setCustomers] = useState<User[]>([]);
+    const [admin, setAdmin] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [totalRecords, setTotalRecords] = useState(0);
     const [visible, setVisible] = useState<boolean>(false);
@@ -28,7 +30,7 @@ export default function PermissionManage() {
         rows: 10,
         page: 0,
     });
-    //   const toast = useToast();
+    const toast = useToast();
     const columns = [
         { field: 'fullName', header: 'Họ và tên', frozen: true },
         { field: 'username', header: 'Tên đăng nhập' },
@@ -37,44 +39,44 @@ export default function PermissionManage() {
         { field: 'email', header: 'Email' },
         { field: 'phoneNumber', header: 'Số điện thoại' },
         {
-            field: 'id', header: '', body: (rowData: any) => {
-                function handleDelete(id: any): void {
+            field: 'id', header: '', body: (rowData: User) => {
+                function handleDelete(id: any, isActive: boolean): void {
+                    confirmDelete(id, isActive)
                 }
-                return <Trash size={20} className="text-red-600" />
+
+                return <Trash size={20} className="text-red-600 hover:cursor-pointer" onClick={() => handleDelete(rowData.id, true)} />
             }
         }
     ];
 
 
-    //   function handleDelete(id: any,isActive : boolean): void {
-    //     confirmDelete(id,isActive)
-    //   }
 
-    //   const acceptDel = (id: string,isActive : boolean) => {
-    //     setLoading(true)
-    //     deleteUser(id,isActive).then((e) => {
-    //       getDataUser();
-    //       toast.showSuccess("Delete success")
-    //     }).catch(() => {
-    //       setLoading(false)
-    //       toast.showError("Delete fail")
-    //     })
-    //   }
+    const acceptDel = (id: string, isActive: boolean) => {
+        setLoading(true)
+        // deleteUser(id,isActive).then((e) => {
+        //   getDataUser();
+        //   toast.showSuccess("Delete success")
+        // }).catch(() => {
+        //   setLoading(false)
+        //   toast.showError("Delete fail")
+        // })
+    }
 
 
 
-    //   const confirmDelete = (id: string,isActive :boolean) => {
-    //     confirmDialog({
-    //       message: 'Bạn có chắc chắn muốn xóa người dùng không',
-    //       header: 'Xác nhận xóa người dùng',
-    //       icon: 'pi pi-info-circle',
-    //       defaultFocus: 'reject',
-    //       acceptClassName: 'p-button-danger',
-    //       acceptLabel: 'Xác nhận',
-    //       rejectLabel: 'Hủy',
-    //       accept: () => acceptDel(id,isActive),
-    //     });
-    //   };
+    const confirmDelete = (id: string, isActive: boolean) => {
+        confirmDialog({
+            message: 'Bạn có chắc chắn muốn xóa người dùng không ?',
+            header: 'Xác nhận xóa người dùng',
+            icon: 'pi pi-info-circle',
+            defaultFocus: 'reject',
+            acceptClassName: 'p-button-danger !bg-red-500',
+            rejectClassName: '!text-black',
+            acceptLabel: 'Xác nhận',
+            rejectLabel: 'Hủy',
+            accept: () => acceptDel(id, isActive),
+        });
+    };
 
 
     const onPageChange = (event: DataTablePageEvent) => {
@@ -98,7 +100,8 @@ export default function PermissionManage() {
         // const _res: ApiResponse<User> = res.data
         //   setCustomers(_res.data?.content ?? [])
         //   setTotalRecords(res.data.data.total)
-        const users = generateFakeUsers(10).filter((u) => {
+        //thêm data vào admin 
+        const users = generateFakeUsers(50).filter((u) => {
             if (u.isAdmin) return u
 
         });
@@ -110,7 +113,7 @@ export default function PermissionManage() {
 
     useEffect(() => {
         getDataUser();
-    }, [lazyParams, debouncedKeyword]);
+    }, []);
 
 
 
@@ -209,7 +212,7 @@ export default function PermissionManage() {
                         rows={lazyParams.rows}
                         totalRecords={totalRecords}
                         loading={loading}
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} customer"
+                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
                         paginatorTemplate={paginatorTemplate}
                         rowsPerPageOptions={rowsPerPageOptions}
                         onPage={onPageChange}

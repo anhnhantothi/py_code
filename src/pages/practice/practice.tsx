@@ -212,7 +212,7 @@ export default function PracticeManage() {
                 rows={lazyParams.rows}
                 totalRecords={totalRecords}
                 loading={loading}
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} customer"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
                 paginatorTemplate={paginatorTemplate}
                 rowsPerPageOptions={rowsPerPageOptions}
                 onPage={onPageChange}

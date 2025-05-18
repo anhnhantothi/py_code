@@ -16,33 +16,37 @@ import CustomerManage from './pages/customer/customer';
 import PermissionManage from './pages/permission/permission';
 import DashboardPage from './pages/dashboard/dashboard';
 import PracticeManage from './pages/practice/practice';
+import { ToastProvider } from './contexts/ToastContext';
 
 
 function App() {
   return (
     <>
-      <NavigationMenu />
-    <div className="pt-12 w-screen bg-white">
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/lesson" element={<LessonPage />} />
-        <Route path="/info" element={<PatientProfileUI />} />
-        <Route path="/lesson/:lessonId" element={<LessonPage />} />
-        <Route path="/pratice" element={<PracticePage />} />
-        <Route path="/workspace" element={<Workspace />} />
-        <Route path="/lesson/:lessonId/exercise" element={<ExercisePage />} />
-        <Route path="/customer" element={<CustomerManage />} />
-        <Route path="/permission" element={<PermissionManage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/practice-management" element={<PracticeManage />} />
+      <ToastProvider>
+        <NavigationMenu />
+        <div className="pt-12 w-screen bg-white">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/lesson" element={<LessonPage />} />
+            <Route path="/info" element={<PatientProfileUI />} />
+            <Route path="/lesson/:lessonId" element={<LessonPage />} />
+            <Route path="/pratice" element={<PracticePage />} />
+            <Route path="/workspace" element={<Workspace />} />
+            <Route path="/lesson/:lessonId/exercise" element={<ExercisePage />} />
+            <Route path="/customer" element={<CustomerManage />} />
+            <Route path="/permission" element={<PermissionManage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/practice-management" element={<PracticeManage />} />
 
-        {/* <Route path="/exercise/:lessonId" element={<ExercisePage />} /> */}
-      </Routes>
-    </div>
-  </>
+            {/* <Route path="/exercise/:lessonId" element={<ExercisePage />} /> */}
+          </Routes>
+        </div>
+      </ToastProvider>
+
+    </>
   );
 }
 

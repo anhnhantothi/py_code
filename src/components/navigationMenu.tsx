@@ -12,6 +12,17 @@ const menuItems = [
   { label: <Link to="/workspace">Workspace</Link>, key: '/workspace', icon: <CodeOutlined /> },
 ];
 
+{/* <Route path="/customer" element={<CustomerManage />} />
+<Route path="/permission" element={<PermissionManage />} />
+<Route path="/dashboard" element={<DashboardPage />} />
+<Route path="/practice-management" element={<PracticeManage />} /> */}
+const menuItemsAdmin = [
+  { label: <Link to="/dashboard">Dashboard</Link>, key: '/dashboard', icon: <FileTextOutlined /> },
+  { label: <Link to="customer/">Customer</Link>, key: '/customer', icon: <HomeOutlined /> },
+  { label: <Link to="/permission">Permission</Link>, key: '/permission', icon: <BookOutlined /> },
+  { label: <Link to="/practice-management">Practice management</Link>, key: '/practice-management', icon: <CodeOutlined /> },
+];
+
 const NavigationMenu: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -36,7 +47,7 @@ const NavigationMenu: React.FC = () => {
         theme="light"
         mode="horizontal"
         selectedKeys={[selectedKey]}
-        items={menuItems}
+        items={menuItemsAdmin}
         style={{ flex: 1, border: 'none' }}
       />
         <div>

@@ -4,12 +4,13 @@ import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
-import { ConfirmDialog } from 'primereact/confirmdialog';
+import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
 import moment from 'moment';
 import debounce from 'lodash.debounce';
 import { generateFakeUsers, User } from './model';
 import { paginatorTemplate, rowsPerPageOptions } from '../../untils/common';
 import { Button } from 'primereact/button';
+import { Trash } from 'lucide-react';
 
 
 
@@ -44,38 +45,47 @@ export default function CustomerManage() {
         </div>;
       }
     },
+    {
+      field: 'id', header: '', body: (rowData: User) => {
+          function handleDelete(id: any, isActive: boolean): void {
+              confirmDelete(id, isActive)
+          }
+
+          return <Trash size={20} className="text-red-600 hover:cursor-pointer" onClick={() => handleDelete(rowData.id, true)} />
+      }
+  }
   ];
 
 
-//   function handleDelete(id: any,isActive : boolean): void {
-//     confirmDelete(id,isActive)
-//   }
+  function handleDelete(id: any,isActive : boolean): void {
+    confirmDelete(id,isActive)
+  }
 
-//   const acceptDel = (id: string,isActive : boolean) => {
-//     setLoading(true)
-//     deleteUser(id,isActive).then((e) => {
-//       getDataUser();
-//       toast.showSuccess("Delete success")
-//     }).catch(() => {
-//       setLoading(false)
-//       toast.showError("Delete fail")
-//     })
-//   }
+  const acceptDel = (id: string,isActive : boolean) => {
+    setLoading(true)
+    // deleteUser(id,isActive).then((e) => {
+    //   getDataUser();
+    //   toast.showSuccess("Delete success")
+    // }).catch(() => {
+    //   setLoading(false)
+    //   toast.showError("Delete fail")
+    // })
+  }
 
 
 
-//   const confirmDelete = (id: string,isActive :boolean) => {
-//     confirmDialog({
-//       message: 'Bạn có chắc chắn muốn xóa người dùng không',
-//       header: 'Xác nhận xóa người dùng',
-//       icon: 'pi pi-info-circle',
-//       defaultFocus: 'reject',
-//       acceptClassName: 'p-button-danger',
-//       acceptLabel: 'Xác nhận',
-//       rejectLabel: 'Hủy',
-//       accept: () => acceptDel(id,isActive),
-//     });
-//   };
+  const confirmDelete = (id: string,isActive :boolean) => {
+    confirmDialog({
+      message: 'Bạn có chắc chắn muốn xóa người dùng không',
+      header: 'Xác nhận xóa người dùng',
+      icon: 'pi pi-info-circle',
+      defaultFocus: 'reject',
+      acceptClassName: 'p-button-danger !bg-red-500',
+      acceptLabel: 'Xác nhận',
+      rejectLabel: 'Hủy',
+      accept: () => acceptDel(id,isActive),
+    });
+  };
 
 
   const onPageChange = (event: DataTablePageEvent) => {
@@ -154,8 +164,6 @@ export default function CustomerManage() {
         value={customers}
         scrollable
         paginator
-        lazy
-        first={lazyParams.first}
         rows={lazyParams.rows}
         totalRecords={totalRecords}
         loading={loading}
