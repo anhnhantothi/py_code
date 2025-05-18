@@ -7,13 +7,14 @@ import Footer from '../../components/footer';
 import '../../assets/css/global.css';
 import '../../assets/css/homepage.css';
 import { useAuth } from '../../context/auth_context';
+import AIImage from '../../assets/images/AI-pic.jpg';
 import {
   BookFilled,
   CheckCircleOutlined,
   CodeOutlined,
-  VideoCameraOutlined,
   GlobalOutlined,
   UsergroupAddOutlined,
+  CommentOutlined,
 } from '@ant-design/icons';
 
 const HomePage: React.FC = () => {
@@ -72,14 +73,14 @@ const HomePage: React.FC = () => {
             <div className="md:w-1/2 relative mt-10 md:mt-0 flex justify-center">
               <div className="relative w-72 h-72 bg-indigo-50 rounded-2xl flex items-center justify-center">
                 <img
-                  src="https://source.unsplash.com/featured/?coding"
+                  src={AIImage}
                   alt="Coding"
                   className="w-48 h-48 object-cover rounded-2xl shadow-md"
                 />
               </div>
               <div className="absolute top-10 right-0 card">
-                <VideoCameraOutlined className="text-indigo-600 text-xl" />
-                <span className="font-medium text-gray-700">2K+ Video</span>
+                <CommentOutlined className="text-indigo-600 text-xl" />
+                <span className="font-medium text-gray-700">2K+ Phản hồi</span>
               </div>
               <div className="absolute bottom-16 left-0 card">
                 <GlobalOutlined className="text-indigo-600 text-xl" />
@@ -103,7 +104,7 @@ const HomePage: React.FC = () => {
               </p>
             </div>
             <img
-              src="https://source.unsplash.com/featured/?terminal"
+              src="../../assets/images/AI-pic.jpg"
               alt="Code Editor"
               className="rounded-2xl shadow-md flex-1"
             />
