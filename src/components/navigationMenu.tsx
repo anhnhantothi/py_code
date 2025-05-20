@@ -42,12 +42,12 @@ const NavigationMenu: React.FC = () => {
 
   return (
     // Full-screen fixed nav bar
-    <div className="w-screen fixed top-0 left-0 z-10 flex items-center justify-between bg-white shadow-md px-6">
+    <div className=" w-screen fixed top-0 left-0 z-10 flex items-center justify-between bg-white shadow-md px-6">
       <Menu
         theme="light"
         mode="horizontal"
         selectedKeys={[selectedKey]}
-        items={menuItemsAdmin}
+        items={menuItems}
         style={{ flex: 1, border: 'none' }}
       />
         <div>

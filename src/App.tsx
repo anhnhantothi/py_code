@@ -22,7 +22,7 @@ import PracticeDetailPage from './pages/practice/PracticeDetailPage';
 function App() {
   return (
     <>
-      <NavigationMenu />
+      {/* <NavigationMenu /> */}
     <div className="pt-12 w-screen bg-white">
       <Routes>
         <Route path="/" element={<HomePage />} />

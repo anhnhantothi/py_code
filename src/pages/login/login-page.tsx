@@ -18,14 +18,12 @@ const LoginPage: React.FC = () => {
       const result = await login(credentials, loginContextFn); // Gọi API và cập nhật AuthContext
 
       if (result.success) {
-        alert('Login successful!');
         navigate('/', { replace: true }); // Chuyển trang ngay
       } else {
         alert(result.error || 'Login failed');
       }
     } catch (error) {
       console.error('Login error:', error);
-      alert('Server error! Login failed.');
     }
   };
 

@@ -9,8 +9,10 @@ interface PythonRunnerProps {
   overlayButton?: boolean;
   showLintButton?: boolean;
   expandOutput?: boolean;
+  extraElements?: React.ReactNode;
   onChange?: (newCode: string) => void;
   onOutput?: (output: string) => void;
+  onSubmit?: (code: string) => void;
 }
 
 const PythonRunner: React.FC<PythonRunnerProps> = ({
@@ -19,8 +21,10 @@ const PythonRunner: React.FC<PythonRunnerProps> = ({
   overlayButton = false,
   showLintButton = false,
   expandOutput = false,
+  extraElements=undefined,
   onChange,
   onOutput,
+  onSubmit,
 }) => {
   const [pyodide, setPyodide] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -108,6 +112,7 @@ const PythonRunner: React.FC<PythonRunnerProps> = ({
           <div className={`mt-2 flex space-x-2 bg-transparent ${overlayButton ? 'bottom-2 left-2 right-2 justify-end' : ''}`}>
             <Button type="primary" onClick={runCode}>Chạy code</Button>
             {showLintButton && <Button disabled={!hasError} onClick={() => setChatVisible(true)}>Sửa lỗi</Button>}
+            {extraElements}{}
           </div>
 
           {/* {chatVisible && <ChatFixModal visible={chatVisible} code={code} onClose={() => setChatVisible(false)} />} */}

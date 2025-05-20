@@ -1,90 +1,70 @@
-import { useState } from 'react';
+// ✅ CommentSection.tsx
+import { useEffect, useState } from 'react';
 import CommentInputBox from './CommentInput';
-import CommentCard, { CommentDto } from './CommentCard';
+import CommentCard from './CommentCard';
+import { CommentDto } from './types';
+import { useParams } from 'react-router-dom';
+import { fetchComments, getPracticeIdBySlug, likeComment, postComment } from '../services/commentService';
 
 const CommentSection = () => {
-    const [comments, setComments] = useState<CommentDto[]>([
-        { id: 1, name: 'tung9******@gmail.com', time: '2 tháng trước', content: 'có ai ko ta', likes: 0, replies: [], hidden: false },
-        {
-            id: 2, name: '0342247464', time: 'một phút trước', content: '123123', likes: 0, replies: [
-                { id: 3, name: 'tung9******@gmail.com', time: '2 tháng trước', content: 'có ai ko ta', likes: 0, replies: [], hidden: false },
-            ], hidden: false
-        },
-    ]);
+  const { slug } = useParams();
+  const [comments, setComments] = useState<CommentDto[]>([]);
+  const [practiceId, setPracticeId] = useState<number | null>(null);
+  const _practiceId = 2;
 
+  useEffect(() => {
+    if (slug) {
+      getPracticeIdBySlug(slug).then(setPracticeId);
+    }
+  }, [slug]);
 
-    const handleCommentSubmit = (newComment:string) => {
-        if (newComment.trim()) {
-            const newId = comments.length + 1;
-            const newCommentData :CommentDto= {
-                id: newId,
-                name: 'Ánh Nhàn',
-                time: 'vừa xong',
-                content: newComment.trim(),
-                likes: 0,
-                replies: [],
-                hidden: false,
-            };
-            setComments([newCommentData, ...comments]);
-        }
-    };
+  const loadComments = async (id: number) => {
+    const data = await fetchComments(id);
+    setComments(data);
+  };
 
-    
-    const handleReplySubmit = (newComment:string,id:number) => {
-        const cmt = comments.find((e)=>e.id == id);
-        if(!cmt) return 
-        if (newComment.trim()) {
-            const newId = cmt?.replies.length  + 1+100;
-            const newCommentData :CommentDto= {
-                id: newId,
-                name: '0342247464',
-                time: 'vừa xong',
-                content: newComment.trim(),
-                likes: 0,
-                replies: [],
-                hidden: false,
-            };
-            const update = comments.map((e) => {
-                if (e.id === id) {
-                    e.replies = [...e.replies, newCommentData];
-                }
-                return e;
-            });
-            setComments(update);
-        }
-    };
+  useEffect(() => {
+    if (_practiceId) {
+      loadComments(_practiceId);
+    }
+  }, [practiceId]);
 
+  const handleCommentSubmit = async (content: string) => {
+    if (!_practiceId) return;
+    await postComment(1, _practiceId, content); // user_id fake
+    loadComments(_practiceId);
+  };
 
-        
-    const handleLike = (id:number) => {  
-        const update = comments.map((e) => {
-            if (e.id == id) {
-                return {...e,likes:e.likes+1}
-            }
-            const res = e.replies.map((rep)=>{
-              if(rep.id == id){
-                return {...rep,likes:rep.likes+1}
-              } 
-              return rep
-            })
-            return {...e,replies:res};
-        });
-        setComments(update);
-    };
+  const handleReplySubmit = async (content: string, parentId: number) => {
+    if (!_practiceId) return;
+    await postComment(1, _practiceId, content, parentId);
+    loadComments(_practiceId);
+  };
 
-    return (
-        <div className="max-w-2xl mx-auto py-4 px-6 bg-white rounded-lg shadow-sm">
-            <CommentInputBox handleCommentSubmit={handleCommentSubmit }/>
-            <div className="space-y-6">
-                {comments.map((comment) => 
-                <CommentCard  
-                comment={comment} 
-                handleReply={(e:string)=>handleReplySubmit(e,comment.id)}
-                handleLike={ (e:number)=>handleLike(e)}/>
-                )}
-            </div>
-        </div>
-    );
+  const handleLike = async (id: number) => {
+    await likeComment(id);
+    if (practiceId) loadComments(practiceId);
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto py-4 px-6 bg-white rounded-lg shadow-sm">
+      <CommentInputBox handleCommentSubmit={handleCommentSubmit} />
+      <div className="space-y-6">
+        {comments.length > 0 && comments.map((comment) => (
+          <CommentCard
+            key={comment.id}
+            comment={{
+              ...comment,
+              name: comment.username,
+              time: new Date(comment.createdAt).toLocaleString(),
+            }}
+            handleReply={handleReplySubmit}
+            handleLike={handleLike}
+          />
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default CommentSection;

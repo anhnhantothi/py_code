@@ -15,3 +15,4 @@ export async function runPythonCode(code: string, stdin: string) {
 
   return res.json();
 }
+

@@ -4,6 +4,9 @@ import PythonRunner from '../../components/PythonRunner';
 import { Difficulty } from './difficultyEnum';
 import { fetchPracticeBySlug } from '../../services/practiceService';
 import CommentSection from '../../components/CommentArea';
+import { Button } from 'antd';
+import ChatReviewModal from '../../components/ChatReviewModal';
+
 
 const mapDifficultyToVietnamese = (diff: string): string => {
   switch (diff) {
@@ -19,6 +22,10 @@ const mapDifficultyToVietnamese = (diff: string): string => {
 };
 
 export default function PracticeDetailPage() {
+  const [code, setCode] = useState('');
+  const [showReviewModal, setShowReviewModal] = useState(false);
+const [submittedCode, setSubmittedCode] = useState('');
+
   const { slug } = useParams();
   const [data, setData] = useState<any>(null);
 
@@ -31,6 +38,10 @@ export default function PracticeDetailPage() {
   }, [slug]);
 
   if (!data) return <p className="p-4">Đang tải đề bài...</p>;
+const handleSubmitCode = (code: string) => {
+  setSubmittedCode(code);
+  setShowReviewModal(true);
+};
 
   return (
     <div className="w-full h-screen flex gap-4 overflow-hidden">
@@ -50,11 +61,31 @@ export default function PracticeDetailPage() {
       </div>
 
       {/* Cột phải: CMD cố định */}
+
       <div className="w-full md:w-3/5 h-screen sticky top-0 overflow-hidden p-6 bg-white shadow-inner">
         <h2 className="text-xl font-semibold mb-4">💻 Viết và chạy mã Python:</h2>
         <div className="h-[calc(100vh-120px)] overflow-y-auto scrollbar-none">
-          <PythonRunner initialCode="" expandOutput={true} showLintButton={true} />
+          <PythonRunner
+            initialCode={code}
+            expandOutput={true}
+            readOnly={false}
+            showLintButton={true}
+            onSubmit={handleSubmitCode}
+            onChange={(val) => setCode(val)}
+            extraElements={
+              <Button type="primary" onClick={() => handleSubmitCode(code)}>
+                Nộp bài
+              </Button>
+            }
+          />
         </div>
+        <ChatReviewModal
+          visible={showReviewModal}
+          code={submittedCode}
+          description={data.description}
+          sampleAnswer={data.sampleAnswer} // nếu có
+          onClose={() => setShowReviewModal(false)}
+        />
       </div>
     </div>
   );

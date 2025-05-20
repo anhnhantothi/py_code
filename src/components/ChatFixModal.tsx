@@ -1,7 +1,7 @@
 // File: src/components/ChatFixModal.tsx
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { Modal, Button, Spin } from 'antd';
-import axios from 'axios';
+import { useAIChat } from './useAIChat';
 
 interface ChatFixModalProps {
   visible: boolean;
@@ -11,39 +11,23 @@ interface ChatFixModalProps {
   onApply: (fixedCode: string) => void;
 }
 
-interface Message {
-  role: 'system' | 'user' | 'assistant';
-  content: string;
-}
-
 export default function ChatFixModal({ visible, code, errorMsg, onClose, onApply }: ChatFixModalProps) {
-  const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<string>('');
+  const prompt = `The following Python code produced this error:
+${errorMsg}
 
-  // send initial fix request when modal opens
-  useEffect(() => {
-    if (!visible) return;
-    const fetchFix = async () => {
-      setLoading(true);
-      try {
-        const prompt = `The following Python code produced this error:\n${errorMsg}\n\nCode:\n\`\`\`python\n${code}\n\`\`\`\nPlease provide a corrected version without explanation.`;
-        const resp = await axios.post('http://localhost:5000/api/chat', {
-          messages: [
-            { role: 'system', content: 'You are a helpful Python assistant.' },
-            { role: 'user', content: prompt }
-          ]
-        });
-        setResponse(resp.data.message.content.trim());
-      } catch (err: any) {
-        setResponse('Failed to get fix from AI.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchFix();
-  }, [visible, code, errorMsg]);
+CCode:
+\`\`\`python
+${code}
+\`\`\`
+Please provide a corrected version without explanation.`;
 
-  // extract code block from AI response
+  const messages = [
+    { role: 'system', content: 'You are a helpful Python assistant.' },
+    { role: 'user', content: prompt }
+  ];
+
+  const { loading, response } = useAIChat(visible, messages);
+
   const getFixedCode = () => {
     const match = response.match(/```python\n([\s\S]*?)```/);
     return match ? match[1] : response;

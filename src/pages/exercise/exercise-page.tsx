@@ -107,7 +107,7 @@ const ExercisePage: React.FC = () => {
                 </div>
               )}
             </Card>
-            <div className='pt-5'><CommentSection/></div>
+            {/* <div className='pt-5'><CommentSection/></div> */}
           </Col>
 
           <Col xs={24} md={14}>
