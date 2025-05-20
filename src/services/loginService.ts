@@ -23,9 +23,17 @@ export async function login(
   const data = await response.json();
 
   if (response.ok) {
-    // localStorage.setItem('token', data.token);
+    ///todo 
+    /// handle save userdata
+    const userData = {
+      id: 1,
+      name: "John Doe",
+      email: "johndoe@example.com",
+      isAdmin:true
+    } 
     localStorage.setItem('token', data.access_token);
     localStorage.setItem('username', credentials.username);
+    localStorage.setItem("user", JSON.stringify(data.user ?? userData));
     loginContextFn(credentials.username); 
     return { success: true };
   } else {

@@ -17,6 +17,7 @@ import PermissionManage from './pages/permission/permission';
 import DashboardPage from './pages/dashboard/dashboard';
 // import PracticeManage from './pages/practice/practice';
 import PracticeDetailPage from './pages/practice/PracticeDetailPage';
+import PracticeManage from './pages/practice/practice';
 
 
 function App() {
@@ -30,7 +31,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/lesson" element={<LessonPage />} />
-        <Route path="/info" element={<PatientProfileUI />} />
+        <Route path="/profile" element={<PatientProfileUI />} />
         <Route path="/lesson/:lessonId" element={<LessonPage />} />
         <Route path="/practice" element={<PracticePage />} />
         <Route path="/practice/:slug" element={<PracticeDetailPage />} />
@@ -39,7 +40,7 @@ function App() {
         <Route path="/customer" element={<CustomerManage />} />
         <Route path="/permission" element={<PermissionManage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        {/* <Route path="/practice-management" element={<PracticeManage />} /> */}
+        <Route path="/practice-management" element={<PracticeManage />} />
 
             {/* <Route path="/exercise/:lessonId" element={<ExercisePage />} /> */}
           </Routes>

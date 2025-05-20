@@ -1,7 +1,7 @@
 import '../../assets/css/login.css'; 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/auth_context';
+import { useAuth } from '../../contexts/auth_context';
 
 const RegisterPage: React.FC = () => {
   const { login: loginContextFn } = useAuth();

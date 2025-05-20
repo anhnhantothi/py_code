@@ -11,6 +11,8 @@ import { generateFakeUsers, User } from './model';
 import { paginatorTemplate, rowsPerPageOptions } from '../../untils/common';
 import { Button } from 'primereact/button';
 import { Trash } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Checkbox } from 'primereact/checkbox';
 
 
 
@@ -24,6 +26,7 @@ export default function CustomerManage() {
   const [customer, setCustomer] = useState<User>();
   const [searchKeyword, setSearchKeyword] = useState('');
   const [debouncedKeyword, setDebouncedKeyword] = useState('');
+  const navigate = useNavigate();
   const [lazyParams, setLazyParams] = useState({
     first: 0,
     rows: 10,
@@ -33,7 +36,10 @@ export default function CustomerManage() {
   const columns = [
     { field: 'fullName', header: 'Họ và tên', frozen: true },
     { field: 'username', header: 'Tên đăng nhập' },
-    { field: 'vip', header: 'VIP' },
+    { field: 'vip', header: 'VIP', body: (rowData: User) => {
+
+return <Checkbox checked={rowData.vip} onChange={(e)=>{confirmActive(rowData.id,e.checked ?? false)}}/> ;
+    } },
     { field: 'gender', header: 'Giới tính' },
     { field: 'email', header: 'Email' },
     { field: 'phoneNumber', header: 'Số điện thoại' },
@@ -46,16 +52,28 @@ export default function CustomerManage() {
       }
     },
     {
-      field: 'id', header: '', body: (rowData: User) => {
-          function handleDelete(id: any, isActive: boolean): void {
-              confirmDelete(id, isActive)
-          }
-
-          return <Trash size={20} className="text-red-600 hover:cursor-pointer" onClick={() => handleDelete(rowData.id, true)} />
+      field: 'id',
+      header: '',
+      body: (rowData: User) => {
+        function handleDelete(e: React.MouseEvent<HTMLDivElement>, id: any, isActive: boolean): void {
+          e.stopPropagation(); // Ngăn chặn sự kiện chọn dòng
+          confirmDelete(id, isActive);
+        }
+    
+        return (
+          <div
+            className="text-red-600 hover:cursor-pointer"
+            onClick={(e) => handleDelete(e, rowData.id, true)}
+          >
+            <Trash size={20} />
+          </div>
+        );
       }
-  }
+    }
   ];
 
+function handeActiveVip(){
+}
 
   function handleDelete(id: any,isActive : boolean): void {
     confirmDelete(id,isActive)
@@ -63,6 +81,7 @@ export default function CustomerManage() {
 
   const acceptDel = (id: string,isActive : boolean) => {
     setLoading(true)
+    ///xóa user
     // deleteUser(id,isActive).then((e) => {
     //   getDataUser();
     //   toast.showSuccess("Delete success")
@@ -72,6 +91,18 @@ export default function CustomerManage() {
     // })
   }
 
+
+  const acceptChange = (id: string,isActive : boolean) => {
+    setLoading(true)
+        ///hủy vip
+    // deleteUser(id,isActive).then((e) => {
+    //   getDataUser();
+    //   toast.showSuccess("Delete success")
+    // }).catch(() => {
+    //   setLoading(false)
+    //   toast.showError("Delete fail")
+    // })
+  }
 
 
   const confirmDelete = (id: string,isActive :boolean) => {
@@ -84,6 +115,19 @@ export default function CustomerManage() {
       acceptLabel: 'Xác nhận',
       rejectLabel: 'Hủy',
       accept: () => acceptDel(id,isActive),
+    });
+  };
+
+  const confirmActive = (id: string,isActive :boolean) => {
+    confirmDialog({
+      message: `Bạn có chắc chắn muốn ${isActive?"kích hoạt":"hủy kích hoạt"} người dùng không`,
+      header: `Xác nhận ${isActive?"kích hoạt":"hủy kích hoạt"}`,
+      icon: 'pi pi-info-circle',
+      defaultFocus: 'reject',
+      acceptClassName: 'p-button-danger !bg-red-500',
+      acceptLabel: 'Xác nhận',
+      rejectLabel: 'Hủy',
+      accept: () => acceptChange(id,isActive),
     });
   };
 
@@ -131,7 +175,12 @@ export default function CustomerManage() {
             <InputText value={searchKeyword} onChange={onSearchChange} placeholder="Tìm kiếm bằng tên , gmail , tài khoản" />
           </IconField>
         </div>
-     
+        <div className="">
+          <Button label='Thêm mới' className='!bg-blue-500' onClick={()=>{
+                   navigate('/profile', { replace: true }); // Chuyển trang ngay
+
+          }}/>
+        </div>
       </div>
     );
   };
@@ -152,11 +201,6 @@ export default function CustomerManage() {
     setSearchKeyword(e.target.value);
   };
 
-  function handleEdit(rowData: User): void {
-    setCustomer(rowData)
-    setVisible(true)
-  }
-
   const header = renderHeader();
   return (
     <div className='h-screen'>
@@ -171,7 +215,9 @@ export default function CustomerManage() {
         paginatorTemplate={paginatorTemplate}
         rowsPerPageOptions={rowsPerPageOptions}
         onPage={onPageChange}
-        onSelectionChange={(e) => handleEdit(e.value)}
+        onSelectionChange={(e) =>{
+          navigate(`/profile?userId=${e.value.id}`, { replace: true });
+        }}
         selectionMode={"single"}
         header={header}
         emptyMessage="No customers found."
@@ -187,13 +233,6 @@ export default function CustomerManage() {
         ))}
       </DataTable>
       <ConfirmDialog />
-
-      {/* <Dialog header={dialogName} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }} closeIcon={true} icons={<i className='pi pi-close text-amber-400'></i>}>
-        <CustomerDetail customerModel={customer!}
-          handleCancel={() => { setVisible(false) }}
-          handleSave={_updateUser}
-        />
-      </Dialog> */}
     </div>
   );
 }

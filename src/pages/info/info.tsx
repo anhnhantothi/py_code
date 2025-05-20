@@ -1,7 +1,11 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { InputText } from "primereact/inputtext";
-import { PencilIcon, CheckIcon } from "lucide-react";
+import { Dropdown } from "primereact/dropdown";
+import { PencilIcon, CheckIcon, XIcon } from "lucide-react";
 import { Card } from "antd";
+import { createUser, generateFakeUser, User } from "../customer/model";
+import { useLocation } from "react-router-dom";
+import { Avatar } from "primereact/avatar";
 
 // Giả sử bạn có sẵn helper cho fetch API
 const getPatientProfile = async () => {
@@ -19,152 +23,145 @@ const updatePatientProfile = async (data: any) => {
   if (!response.ok) throw new Error("Failed to update patient profile");
   return await response.json();
 };
-const fakeTopics = [
-  {
-    id: 1,
-    name: "Chủ đề 1: Nhập môn Python",
-    lessons: [
-      { id: 1, title: "Biến và kiểu dữ liệu" },
-      { id: 2, title: "Câu lệnh điều kiện" },
-      { id: 3, title: "Vòng lặp" },
-    ],
-  },
-  {
-    id: 2,
-    name: "Chủ đề 2: Hàm và cấu trúc dữ liệu",
-    lessons: [
-      { id: 4, title: "Hàm trong Python" },
-      { id: 5, title: "List và Tuple" },
-    ],
-  },
-];
 
 const PatientProfileUI = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState(0);
-  const [patientData, setPatientData] = useState({
-    firstName: "",
-    gender: "",
-    email: "",
-    phone: "",
-    address: "",
-  });
+  const [patientData, setPatientData] = useState<User>();
+  const location = useLocation();
+  const [onlyCreate, setOnlyCreate] = useState(false);
+  const genderOptions = [
+    { label: "Male", value: "MALE" },
+    { label: "Female", value: "FEMALE" },
+  ];
 
-  // Lấy dữ liệu thật từ server
   useEffect(() => {
-    getPatientProfile()
-      .then((data) => setPatientData(data))
-      .catch((err) => console.error(err));
-  }, []);
+    const searchParams = new URLSearchParams(location.search);
+    const userId = searchParams.get("userId");
 
+    if (userId) {
+      setPatientData(generateFakeUser());
+      // getPatientProfile()
+      //   .then((data) => setPatientData(data))
+      //   .catch((err) => console.error(err));
+    } else {
+      const emptyUser: User = createUser();
+      setPatientData(emptyUser)
+      setOnlyCreate(true)
+      setIsEditing(true)
+    }
+
+  }, [location.search]);
 
   const handleChange = (e: any) => {
-  const { name, value } = e.target;
-  setPatientData((prevData) => ({ ...prevData, [name]: value }));
-};
+    const { name, value } = e.target || e;
+    setPatientData((prevData) => {
+      if (!prevData) return prevData; // Tránh lỗi khi prevData là undefined
+      return { ...prevData, [name]: value } as User;
+    });
+  };
 
   const toggleEdit = async () => {
     if (isEditing) {
       try {
-        await updatePatientProfile(patientData); // Cập nhật dữ liệu lên server
+        await updatePatientProfile(patientData);
         alert("Cập nhật thành công");
+
       } catch (err) {
-        console.error(err);
         alert("Lỗi khi cập nhật dữ liệu");
+        console.error(err);
+        return
       }
     }
     setIsEditing(!isEditing);
   };
 
+  const getInitials = (fullName: string | undefined) => {
+    if (!fullName) return "";
+    const names = fullName.trim().split(" ");
+    if (names.length === 1) return names[0].charAt(0).toUpperCase();
+    return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
+};
+
   return (
     <div className="mx-auto w-[1220px] h-screen">
-      <div className="flex items-center justify-between mb-6 shadow-[0_6px_15px_rgba(0,0,0,0.15)] p-5 relative">
+      <div className="flex items-center justify-between mb-6 shadow-md p-5 relative">
         <div className="flex items-center">
-          <img
-            src="https://cdn.dribbble.com/userupload/17410840/file/original-07a4b1c25e613420faf0f0aff1283311.jpg"
-            alt="Profile"
-            className="w-20 h-20 rounded-full mr-4"
-          />
+          <Avatar label={getInitials(patientData?.fullName)} className="mr-4" size="xlarge" />
+
           <div>
-            <h2 className="text-2xl font-semibold">{patientData.firstName}</h2>
-            <p className="text-gray-500">📞 {patientData.phone}</p>
-            <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-lg">
-              Active
-            </span>
+            <h2 className="text-2xl font-semibold">{patientData?.fullName}
+              <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-lg">
+                {patientData?.enabled ? "Active" : "Inactive"}
+              </span></h2>
+            <p className="text-gray-500">📞 {patientData?.phoneNumber}</p>
+            {
+              patientData?.vip ? <span className="bg-yellow-100 text-yellow-700 text-sm px-2 py-1 rounded-lg hover:cursor-pointer">VIP</span>
+                : <span className="bg-blue-100 text-blue-700 text-sm px-2 py-1 rounded-lg hover:cursor-pointer">Bạn còn {patientData?.useNumber ?? 0} lần dùng thử, nâng cấp ngay !!!</span>
+
+            }
           </div>
         </div>
-        <div
-          onClick={toggleEdit}
-          className="cursor-pointer p-2 rounded-full hover:bg-gray-300"
-        >
-          {isEditing ? (
-            <CheckIcon size={20} className="text-green-600" />
-          ) : (
-            <PencilIcon size={20} className="text-gray-700" />
-          )}
+        <div className="flex">
+          <div hidden={!isEditing || onlyCreate} className="cursor-pointer p-2 rounded-full hover:bg-gray-300" onClick={() => {
+            setIsEditing(!isEditing);
+          }}
+          >
+            <XIcon size={20} className="text-gray-700" />
+          </div>
+
+          <div
+            onClick={toggleEdit}
+            className="cursor-pointer p-2 rounded-full hover:bg-gray-300"
+          >
+            {isEditing ? (
+              <CheckIcon size={20} className="text-green-600" />
+            ) : (
+              <PencilIcon size={20} className="text-gray-700" />
+            )}
+          </div>
         </div>
+
+
       </div>
 
-      <div className="shadow-[0_6px_15px_rgba(0,0,0,0.15)] p-5">
-        <div className="flex border-b mb-6">
-          {["Personal Information", "Process"].map((tab, index) => (
-            <div
-              key={index}
-              onClick={() => setActiveTab(index)}
-              className={`px-4 py-2 cursor-pointer text-lg font-semibold transition-colors duration-200 ${
-                activeTab === index
-                  ? "text-blue-600 "
-                  : "text-gray-500 hover:text-blue-300"
-              }`}
-            >
-              {tab}
-            </div>
-          ))}
-        </div>
-
-        {activeTab === 0 ? (
-          <div className="grid grid-cols-2 gap-6 mb-6">
-            {Object.entries(patientData).map(([key, value]) => (
-              <div key={key}>
-                <strong>
-                  {key
-                    .replace(/([A-Z])/g, " $1")
-                    .replace(/^./, (str) => str.toUpperCase())}
-                  :
-                </strong>
+      <div className="shadow-md p-5">
+        <div className="grid grid-cols-2 gap-6 mb-6">
+          {patientData && (
+            <>
+              {[ "email", "job", "fullName", "phoneNumber", "address"].map((field) => (
+                <div key={field}>
+                  <strong>
+                    {field.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}:
+                  </strong>
+                  {isEditing ? (
+                    <InputText
+                      value={(patientData as any)[field] || ""}
+                      name={field}
+                      onChange={handleChange}
+                      className="w-full mt-1"
+                    />
+                  ) : (
+                    <p>{(patientData as any)[field]}</p>
+                  )}
+                </div>
+              ))}
+              <div>
+                <strong>Gender:</strong>
                 {isEditing ? (
-                  <InputText
-                    value={value}
-                    name={key}
-                    onChange={handleChange}
+                  <Dropdown
+                    name="gender"
+                    value={patientData.gender}
+                    options={genderOptions}
+                    onChange={(e) => handleChange({ name: "gender", value: e.value })}
                     className="w-full mt-1"
                   />
                 ) : (
-                  <p>{value}</p>
+                  <p>{patientData.gender}</p>
                 )}
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-gray-700">
-           {
-            <div className="">
-            {fakeTopics.map((topic) => (
-              <Card key={topic.id} className="mb-6 shadow-md p-1 bg-white rounded-2xl">
-                <h2 className="text-xl font-semibold mb-4">{topic.name}</h2>
-                <ul className="list-disc list-inside">
-                  {topic.lessons.map((lesson) => (
-                    <li key={lesson.id} className={`mb-2 ${lesson.id <4 ? "text-gray-500 line-through":"text-black"}`}>
-                      {lesson.title} 
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            ))}
-          </div>
-           }
-          </div>
-        )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

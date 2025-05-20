@@ -1,6 +1,7 @@
 import React from "react";
 import { PieChart, Pie, Cell, Bar, ComposedChart, BarChart, } from "recharts";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import HeatmapChart from "./heatmap";
 
 const data = [
     { name: "Hoàn thành", value: 400 },
@@ -22,18 +23,18 @@ const data1 = [
 ];
 
 const data2 = [
-    { month: "Tháng 1", newUsers: 4000, completedUsers: 2400, revenue: 3200 },
-    { month: "Tháng 2", newUsers: 3000, completedUsers: 1398, revenue: 4500 },
-    { month: "Tháng 3", newUsers: 2000, completedUsers: 9800, revenue: 5000 },
-    { month: "Tháng 4", newUsers: 2780, completedUsers: 3908, revenue: 3500 },
-    { month: "Tháng 5", newUsers: 1890, completedUsers: 4800, revenue: 4000 },
-    { month: "Tháng 6", newUsers: 2390, completedUsers: 3800, revenue: 4200 },
-    { month: "Tháng 7", newUsers: 3490, completedUsers: 4300, revenue: 4800 },
-    { month: "Tháng 8", newUsers: 3200, completedUsers: 4000, revenue: 4600 },
-    { month: "Tháng 9", newUsers: 2780, completedUsers: 3500, revenue: 4400 },
-    { month: "Tháng 10", newUsers: 4500, completedUsers: 4200, revenue: 5000 },
-    { month: "Tháng 11", newUsers: 3000, completedUsers: 2500, revenue: 3600 },
-    { month: "Tháng 12", newUsers: 3800, completedUsers: 2800, revenue: 4700 },
+    { month: "Tháng 1", newUsers: 4000, revenue: 3200 },
+    { month: "Tháng 2", newUsers: 3000, revenue: 4500 },
+    { month: "Tháng 3", newUsers: 2000, revenue: 5000 },
+    { month: "Tháng 4", newUsers: 2780, revenue: 3500 },
+    { month: "Tháng 5", newUsers: 1890, revenue: 4000 },
+    { month: "Tháng 6", newUsers: 2390, revenue: 4200 },
+    { month: "Tháng 7", newUsers: 3490, revenue: 4800 },
+    { month: "Tháng 8", newUsers: 3200, revenue: 4600 },
+    { month: "Tháng 9", newUsers: 2780, revenue: 4400 },
+    { month: "Tháng 10", newUsers: 4500, revenue: 5000 },
+    { month: "Tháng 11", newUsers: 3000, revenue: 3600 },
+    { month: "Tháng 12", newUsers: 3800, revenue: 4700 },
 ];
 
 const data4 = [
@@ -67,7 +68,7 @@ const COLORS = ["#0088FE", "#00C49F",];
 
 const DashboardPage: React.FC = () => {
     return (
-        <div>
+        <div className="bg-white">
             <div className="w-full mx-auto bg-gray-50 p-4 rounded-2xl gap-5 flex">
                 <label className="w-[50%]">
                     <div className="w-full bg-white p-4 rounded-2xl shadow-md ">
@@ -111,31 +112,27 @@ const DashboardPage: React.FC = () => {
                 </label>
             </div>
 
-            <div className="w-full h-screen mx-auto bg-gray-50 p-4 gap-5 h-[400px] rounded-2xl shadow-md flex">
+            <div className="w-full h-[500px] mx-auto bg-gray-50 p-4 gap-5 flex">
                 <label className="w-[50%]">
                     <div className="w-full bg-white p-4 rounded-2xl shadow-md ">
                         <h2 className="text-xl font-semibold text-center mb-4">Biểu đồ người dùng thường và người dùng vip</h2>
-                        <ResponsiveContainer width="100%" height={400}>
-                            <ComposedChart data={data2} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                        <ResponsiveContainer width="100%" height={500}>
+                            <BarChart
+                                width={800}
+                                height={400}
+                                data={data2}
+                                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                            >
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="month" />
                                 <YAxis />
                                 <Tooltip />
                                 <Legend />
 
-                                {/* Bar */}
-                                <Bar dataKey="revenue" name="Người dùng" fill="#ffa726" barSize={30} />
-
-                                {/* Line 1 */}
-                                <Line
-                                    type="monotone"
-                                    dataKey="newUsers"
-                                    name="Kích hoạt vip"
-                                    stroke="#8884d8"
-                                    strokeWidth={2}
-                                    dot={{ r: 4 }}
-                                />
-                            </ComposedChart>
+                                {/* stacked bars */}
+                                <Bar dataKey="newUsers" stackId="a" name="Kích hoạt vip" fill="#8884d8" />
+                                <Bar dataKey="revenue" stackId="a" name="Người dùng" fill="#ffa726" />
+                            </BarChart>
                         </ResponsiveContainer>
                     </div>
                 </label>
@@ -144,15 +141,8 @@ const DashboardPage: React.FC = () => {
                         <h2 className="text-xl font-semibold text-center mb-4">
                             Biểu đồ hoạt động của người dùng theo giờ
                         </h2>
-                        <ResponsiveContainer width="100%" height={400}>
-                            <BarChart data={data4} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="hour" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Bar dataKey="users" name="Số người dùng" fill="#8884d8" barSize={20} />
-                            </BarChart>
+                        <ResponsiveContainer width="100%" height={500}>
+                            <HeatmapChart></HeatmapChart>
                         </ResponsiveContainer>
                     </div>
 

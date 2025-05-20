@@ -6,7 +6,7 @@ import NavigationMenu from '../../components/navigationMenu';
 import Footer from '../../components/footer';
 import '../../assets/css/global.css';
 import '../../assets/css/homepage.css';
-import { useAuth } from '../../context/auth_context';
+import { useAuth } from '../../contexts/auth_context';
 import AIImage from '../../assets/images/AI-pic.jpg';
 import {
   BookFilled,

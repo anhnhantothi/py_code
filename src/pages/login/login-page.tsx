@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import '../../assets/css/login.css';
 import { useNavigate } from 'react-router-dom';
 import { login, LoginCredentials } from '../../services/loginService';
-import { useAuth } from '../../context/auth_context';
+import { useAuth } from '../../contexts/auth_context';
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');

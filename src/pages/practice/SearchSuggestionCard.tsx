@@ -27,6 +27,8 @@ export interface SearchSuggestionCardProps {
   slug: string;
 }
 
+
+
 export const SearchSuggestionCard: React.FC<SearchSuggestionCardProps> = ({
   title,
   difficulty,
