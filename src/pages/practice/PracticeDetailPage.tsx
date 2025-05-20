@@ -11,11 +11,11 @@ import ChatReviewModal from '../../components/ChatReviewModal';
 const mapDifficultyToVietnamese = (diff: string): string => {
   switch (diff) {
     case 'EASY':
-      return Difficulty.De;
+      return Difficulty.EASY;
     case 'MEDIUM':
-      return Difficulty.TrungBinh;
+      return Difficulty.MEDIUM;
     case 'HARD':
-      return Difficulty.Kho;
+      return Difficulty.HARD;
     default:
       return diff;
   }

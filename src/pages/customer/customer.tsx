@@ -7,13 +7,68 @@ import { InputIcon } from 'primereact/inputicon';
 import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
 import moment from 'moment';
 import debounce from 'lodash.debounce';
-import { generateFakeUsers, User } from './model';
+import { User } from './model';
 import { paginatorTemplate, rowsPerPageOptions } from '../../untils/common';
 import { Button } from 'primereact/button';
 import { Trash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Checkbox } from 'primereact/checkbox';
+import { useToast } from '../../contexts/ToastContext';
 
+export const getAllUserInfo = async () => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch("http://localhost:5000/user-info/all", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Lỗi: ${response.status} - ${error}`);
+  }
+
+  return await response.json();
+};
+
+const deleteUserInfo = async (userInfoId: number) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`http://localhost:5000/user-info?userId=${userInfoId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Xoá thất bại: ${response.status} - ${error}`);
+  }
+
+  return await response.json();
+};
+
+
+const activeVip = async (userInfoId: number) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`http://localhost:5000//user-info/vip-status?userId=${userInfoId}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Xoá thất bại: ${response.status} - ${error}`);
+  }
+
+  return await response.json();
+};
 
 
 
@@ -32,14 +87,24 @@ export default function CustomerManage() {
     rows: 10,
     page: 0,
   });
-//   const toast = useToast();
+  const toast = useToast();
   const columns = [
     { field: 'fullName', header: 'Họ và tên', frozen: true },
     { field: 'username', header: 'Tên đăng nhập' },
-    { field: 'vip', header: 'VIP', body: (rowData: User) => {
+    {
+      field: 'vip', header: 'VIP', body: (rowData: User) => {
 
-return <Checkbox checked={rowData.vip} onChange={(e)=>{confirmActive(rowData.id,e.checked ?? false)}}/> ;
-    } },
+        return <Checkbox checked={rowData.vip} onChange={(e) => {
+
+          if (e.checked) {
+            confirmActive(rowData.id!)
+          }
+        }
+        }
+
+        />;
+      }
+    },
     { field: 'gender', header: 'Giới tính' },
     { field: 'email', header: 'Email' },
     { field: 'phoneNumber', header: 'Số điện thoại' },
@@ -59,7 +124,7 @@ return <Checkbox checked={rowData.vip} onChange={(e)=>{confirmActive(rowData.id,
           e.stopPropagation(); // Ngăn chặn sự kiện chọn dòng
           confirmDelete(id, isActive);
         }
-    
+
         return (
           <div
             className="text-red-600 hover:cursor-pointer"
@@ -72,40 +137,37 @@ return <Checkbox checked={rowData.vip} onChange={(e)=>{confirmActive(rowData.id,
     }
   ];
 
-function handeActiveVip(){
-}
-
-  function handleDelete(id: any,isActive : boolean): void {
-    confirmDelete(id,isActive)
+  function handeActiveVip() {
   }
 
-  const acceptDel = (id: string,isActive : boolean) => {
+  function handleDelete(id: any, isActive: boolean): void {
+    confirmDelete(id, isActive)
+  }
+
+  const acceptDel = (id: number, isActive: boolean) => {
     setLoading(true)
-    ///xóa user
-    // deleteUser(id,isActive).then((e) => {
-    //   getDataUser();
-    //   toast.showSuccess("Delete success")
-    // }).catch(() => {
-    //   setLoading(false)
-    //   toast.showError("Delete fail")
-    // })
+    deleteUserInfo(id).then((e) => {
+      toast.showSuccess("Xóa thành công")
+
+    }).catch(() => {
+      toast.showError("Delete fail")
+    })
+    setLoading(false)
   }
 
 
-  const acceptChange = (id: string,isActive : boolean) => {
+  const acceptChange = (id: number,) => {
     setLoading(true)
-        ///hủy vip
-    // deleteUser(id,isActive).then((e) => {
-    //   getDataUser();
-    //   toast.showSuccess("Delete success")
-    // }).catch(() => {
-    //   setLoading(false)
-    //   toast.showError("Delete fail")
-    // })
+    activeVip(id).then((e) => {
+      toast.showSuccess("Kích hoạt vip thành công")
+    }).catch((e) => {
+      toast.showError("Kích hoạt vip thất bại")
+    })
+    setLoading(false)
   }
 
 
-  const confirmDelete = (id: string,isActive :boolean) => {
+  const confirmDelete = (id: number, isActive: boolean) => {
     confirmDialog({
       message: 'Bạn có chắc chắn muốn xóa người dùng không',
       header: 'Xác nhận xóa người dùng',
@@ -114,20 +176,20 @@ function handeActiveVip(){
       acceptClassName: 'p-button-danger !bg-red-500',
       acceptLabel: 'Xác nhận',
       rejectLabel: 'Hủy',
-      accept: () => acceptDel(id,isActive),
+      accept: () => acceptDel(id, isActive),
     });
   };
 
-  const confirmActive = (id: string,isActive :boolean) => {
+  const confirmActive = (id: number) => {
     confirmDialog({
-      message: `Bạn có chắc chắn muốn ${isActive?"kích hoạt":"hủy kích hoạt"} người dùng không`,
-      header: `Xác nhận ${isActive?"kích hoạt":"hủy kích hoạt"}`,
+      message: `Bạn có chắc chắn muốn kích hoạt người dùng không`,
+      header: `Xác nhận kích hoạt`,
       icon: 'pi pi-info-circle',
       defaultFocus: 'reject',
       acceptClassName: 'p-button-danger !bg-red-500',
       acceptLabel: 'Xác nhận',
       rejectLabel: 'Hủy',
-      accept: () => acceptChange(id,isActive),
+      accept: () => acceptChange(id),
     });
   };
 
@@ -150,13 +212,12 @@ function handeActiveVip(){
 
   const getDataUser = () => {
     setLoading(true)
-    // const _res: ApiResponse<User> = res.data
-    //   setCustomers(_res.data?.content ?? [])
-    //   setTotalRecords(res.data.data.total)
-    const users = generateFakeUsers(10);
-
-    setCustomers(users)
-    setTotalRecords(50)
+    getAllUserInfo().then(e => {
+      setCustomers(e)
+      setTotalRecords(50)
+    }).catch(e => {
+      console.log(e)
+    });
     setLoading(false)
   }
 
@@ -174,12 +235,6 @@ function handeActiveVip(){
             <InputIcon className="pi pi-search" />
             <InputText value={searchKeyword} onChange={onSearchChange} placeholder="Tìm kiếm bằng tên , gmail , tài khoản" />
           </IconField>
-        </div>
-        <div className="">
-          <Button label='Thêm mới' className='!bg-blue-500' onClick={()=>{
-                   navigate('/profile', { replace: true }); // Chuyển trang ngay
-
-          }}/>
         </div>
       </div>
     );
@@ -215,7 +270,7 @@ function handeActiveVip(){
         paginatorTemplate={paginatorTemplate}
         rowsPerPageOptions={rowsPerPageOptions}
         onPage={onPageChange}
-        onSelectionChange={(e) =>{
+        onSelectionChange={(e) => {
           navigate(`/profile?userId=${e.value.id}`, { replace: true });
         }}
         selectionMode={"single"}

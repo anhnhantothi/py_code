@@ -15,7 +15,7 @@ export default function PracticePage() {
       const result = await fetchPractices(); 
       const mapped = result.map((item: any, index: number): SearchSuggestion => ({
         id: item.id ?? index,
-        active: item.active ?? true,
+        isActive: item.active ?? false,
         title: item.title,
         slug: item.slug,
         difficulty: item.difficulty, 
@@ -30,9 +30,9 @@ export default function PracticePage() {
 
   // map từ filter string sang enum
   const filterMap: Record<string, Difficulty> = {
-    EASY: Difficulty.De,
-    MEDIUM: Difficulty.TrungBinh,
-    HARD: Difficulty.Kho,
+    EASY: Difficulty.EASY,
+    MEDIUM: Difficulty.MEDIUM,
+    HARD: Difficulty.HARD,
   };
 
   const filteredData = data.filter(item =>

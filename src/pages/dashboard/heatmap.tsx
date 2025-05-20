@@ -10,6 +10,7 @@ interface DataPoint {
   y: number; // giờ (0-23)
   v: number; // giá trị hoạt động
 }
+const token = localStorage.getItem('token');
 
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -31,101 +32,108 @@ const HeatmapChart: React.FC = () => {
 
   useEffect(() => {
     if (!chartRef.current) return;
+    fetch('http://localhost:5000/analytics/heatmap-submission', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => res.json())
+      .then((_dataPoints) => {
+        const dataPoints = _dataPoints;
 
-    const dataPoints = generateRandomData();
-
-    const data: ChartData<'matrix'> = {
-      datasets: [
-        {
-          label: 'User Activity Heatmap',
-          data: dataPoints,
-          backgroundColor: (ctx) => {
-            const value = ctx.dataset.data[ctx.dataIndex] as DataPoint;
-            const alpha = value.v / 100;
-            return `rgba(0, 123, 255, ${alpha})`;
-          },
-          width: (ctx) => {
-            const chartArea = ctx.chart.chartArea;
-            if (!chartArea) return 0; // kiểm tra chartArea tồn tại
-            return (chartArea.right - chartArea.left) / 7 - 2;
-          },
-          height: (ctx) => {
-            const chartArea = ctx.chart.chartArea;
-            if (!chartArea) return 0; // kiểm tra chartArea tồn tại
-            return (chartArea.bottom - chartArea.top) / 24 - 2;
-          },
-          borderWidth: 1,
-          borderColor: 'white',
-        },
-      ],
-    };
-
-    const options: ChartOptions<'matrix'> = {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          type: 'linear',
-          position: 'top',
-          min: 0,
-          max: 6,
-          ticks: {
-            stepSize: 1,
-            callback: (val) => days[val as number] ?? '',
-          },
-          grid: {
-            display: false,
-          },
-        },
-        y: {
-          type: 'linear',
-          reverse: true,
-          min: 0,
-          max: 23,
-          ticks: {
-            stepSize: 1,
-            callback: (val) => `${val}:00`,
-          },
-          grid: {
-            display: false,
-          },
-        },
-      },
-      plugins: {
-        tooltip: {
-          callbacks: {
-            title: (ctx) => {
-              const d = ctx[0].raw as DataPoint;
-              return `${days[d.x]}, ${d.y}:00`;
+        const data: ChartData<'matrix'> = {
+          datasets: [
+            {
+              label: 'User Activity Heatmap',
+              data: dataPoints,
+              backgroundColor: (ctx) => {
+                const value = ctx.dataset.data[ctx.dataIndex] as DataPoint;
+                const alpha = value.v / 100;
+                return `rgba(0, 123, 255, ${alpha})`;
+              },
+              width: (ctx) => {
+                const chartArea = ctx.chart.chartArea;
+                if (!chartArea) return 0; // kiểm tra chartArea tồn tại
+                return (chartArea.right - chartArea.left) / 7 - 2;
+              },
+              height: (ctx) => {
+                const chartArea = ctx.chart.chartArea;
+                if (!chartArea) return 0; // kiểm tra chartArea tồn tại
+                return (chartArea.bottom - chartArea.top) / 24 - 2;
+              },
+              borderWidth: 1,
+              borderColor: 'white',
             },
-            label: (ctx) => {
-              const d = ctx.raw as DataPoint;
-              return `Hoạt động: ${d.v}`;
+          ],
+        };
+
+        const options: ChartOptions<'matrix'> = {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              type: 'linear',
+              position: 'top',
+              min: 0,
+              max: 6,
+              ticks: {
+                stepSize: 1,
+                callback: (val) => days[val as number] ?? '',
+              },
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              type: 'linear',
+              reverse: true,
+              min: 0,
+              max: 23,
+              ticks: {
+                stepSize: 1,
+                callback: (val) => `${val}:00`,
+              },
+              grid: {
+                display: false,
+              },
             },
           },
-        },
-        legend: {
-          display: false,
-        },
-      },
-    };
+          plugins: {
+            tooltip: {
+              callbacks: {
+                title: (ctx) => {
+                  const d = ctx[0].raw as DataPoint;
+                  return `${days[d.x]}, ${d.y}:00`;
+                },
+                label: (ctx) => {
+                  const d = ctx.raw as DataPoint;
+                  return `Hoạt động: ${d.v}`;
+                },
+              },
+            },
+            legend: {
+              display: false,
+            },
+          },
+        };
 
-    // Hủy chart cũ nếu tồn tại
-    if (chartInstance.current) {
-      chartInstance.current.destroy();
-    }
+        // Hủy chart cũ nếu tồn tại
+        if (chartInstance.current) {
+          chartInstance.current.destroy();
+        }
 
-    // Tạo chart mới
-    chartInstance.current = new Chart(chartRef.current, {
-      type: 'matrix',
-      data,
-      options,
-    });
+        // Tạo chart mới
+        chartInstance.current = new Chart(chartRef.current!, {
+          type: 'matrix',
+          data,
+          options,
+        });
 
-    // Cleanup khi component unmount
-    return () => {
-      chartInstance.current?.destroy();
-    };
+        // Cleanup khi component unmount
+        return () => {
+          chartInstance.current?.destroy();
+        };
+      });
+
+
   }, []);
 
   return (

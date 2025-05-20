@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/auth_context';
 import { Avatar } from 'primereact/avatar';
 import { Menu } from 'primereact/menu';
+import { getInitials } from '../pages/info/info';
 
 const menuItems = [
   { label: <Link to="/">Home</Link>, key: '/', icon: <HomeOutlined /> },
@@ -23,7 +24,7 @@ const menuItemsAdmin = [
 const NavigationMenu: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, username, logout } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
 
   // Khai báo rõ kiểu ref ở đây:
   const menuRef = useRef<Menu>(null);
@@ -31,7 +32,7 @@ const NavigationMenu: React.FC = () => {
   const selectedKey = menuItemsAdmin.find(item => item.key === location.pathname)?.key || '/';
 
   const menuItemsUser = [
-    { label: 'Thông tin cá nhân', command: () => navigate('/profile') },
+    { label: 'Thông tin cá nhân', command: () => navigate(`/profile?userId=${user?.id}`) },
     {
       label: 'Đăng xuất',
       command: () => {
@@ -40,11 +41,11 @@ const NavigationMenu: React.FC = () => {
       },
     },
   ];
-
+  console.log(user)
   return (
     // Full-screen fixed nav bar
     <div className=" w-screen fixed top-0 left-0 z-10 flex items-center justify-between bg-white shadow-md px-6">
-      <Menu
+      <AntMenu
         theme="light"
         mode="horizontal"
         selectedKeys={[selectedKey]}
@@ -55,12 +56,8 @@ const NavigationMenu: React.FC = () => {
         className="user-button flex items-center gap-2 hover:cursor-pointer"
         onClick={(e) => menuRef.current?.toggle(e)}
       >
-        <span>{username || 'Ánh Nhàn'}</span>
-        <Avatar
-          image="https://plus.unsplash.com/premium_photo-1682125468951-f9e8a1f53df6?q=80&w=1976&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          size="normal"
-          shape="circle"
-        />
+        <span>{user?.fullName ?? "Người dùng"}</span>
+        <Avatar label={getInitials(user?.fullName ?? "Người dùng")} className="mr-4" size="normal" />
         <Menu model={menuItemsUser} popup ref={menuRef} />
       </div>
     </div>

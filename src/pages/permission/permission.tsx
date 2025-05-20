@@ -8,16 +8,31 @@ import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
 import moment from 'moment';
 import debounce from 'lodash.debounce';
 import { paginatorTemplate, rowsPerPageOptions } from '../../untils/common';
-import { generateFakeUsers, User } from '../customer/model';
+import {  User } from '../customer/model';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { CheckIcon, Trash } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
+import { getAllUserInfo } from '../customer/customer';
 
 
+const updateAdminStatusBulk = async (userIds: number[], value: boolean) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`http://localhost:5000/user-info/admin-status`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ userIds, value })
+  });
+
+  return await res.json();
+};
 
 export default function PermissionManage() {
-    const [customers, setCustomers] = useState<User[]>([]);
+    const [user, setUser] = useState<User[]>([]);
     const [admin, setAdmin] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [totalRecords, setTotalRecords] = useState(0);
@@ -51,30 +66,31 @@ export default function PermissionManage() {
 
 
 
-    const acceptDel = (id: string, isActive: boolean) => {
+    const acceptDel = (id: number) => {
         setLoading(true)
-        // deleteUser(id,isActive).then((e) => {
-        //   getDataUser();
-        //   toast.showSuccess("Delete success")
-        // }).catch(() => {
-        //   setLoading(false)
-        //   toast.showError("Delete fail")
-        // })
+        updateAdminStatusBulk([id], false).then((e) => {
+            getDataUser();
+            toast.showSuccess("Update success")
+        }).catch(() => {
+            setLoading(false)
+            toast.showError("Update fail")
+        })
+      
     }
 
 
 
-    const confirmDelete = (id: string, isActive: boolean) => {
+    const confirmDelete = (id: number, isActive: boolean) => {
         confirmDialog({
-            message: 'Bạn có chắc chắn muốn xóa người dùng không ?',
-            header: 'Xác nhận xóa người dùng',
+            message: `Bạn có chắc chắn muốn ${isActive ? 'kích hoạt' : 'xóa'} người dùng không ?`,
+            header: `Xác nhận ${isActive ? 'kích hoạt' : 'xóa'} người dùng`,
             icon: 'pi pi-info-circle',
             defaultFocus: 'reject',
             acceptClassName: 'p-button-danger !bg-red-500',
             rejectClassName: '!text-black',
             acceptLabel: 'Xác nhận',
             rejectLabel: 'Hủy',
-            accept: () => acceptDel(id, isActive),
+            accept: () => acceptDel(id),
         });
     };
 
@@ -97,17 +113,14 @@ export default function PermissionManage() {
 
     const getDataUser = () => {
         setLoading(true)
-        // const _res: ApiResponse<User> = res.data
-        //   setCustomers(_res.data?.content ?? [])
-        //   setTotalRecords(res.data.data.total)
-        //thêm data vào admin 
-        const users = generateFakeUsers(50).filter((u) => {
-            if (u.isAdmin) return u
-
-        });
-
-        setCustomers(users)
-        setTotalRecords(50)
+        getAllUserInfo().then(e => {
+            const admin = e.filter((item: any) => item.isAdmin === true)
+            const user = e.filter((item: any) => item.isAdmin === false)
+            setAdmin(admin);
+            setUser(user);
+        }).catch(e => {
+            toast.showError(e)
+        })
         setLoading(false)
     }
 
@@ -161,20 +174,22 @@ export default function PermissionManage() {
     };
 
     function handleSavePermisson() {
-        setPermission([])
+        updateAdminStatusBulk(permission.map((item: any) => item.id), true).then((e) => {
+            getDataUser();
+            toast.showSuccess("Update success")
+                    setPermission([])
+
+        }).catch(() => {
+            toast.showError("Update fail")
+        })
         setVisible(false)
     }
-
-    //   function handleEdit(rowData: User): void {
-    //     permission(rowData)
-    //     setVisible(true)
-    //   }
 
     const header = renderHeader();
     return (
         <div className='h-screen'>
             <DataTable
-                value={customers}
+                value={admin}
                 scrollable
                 paginator
                 lazy
@@ -204,7 +219,7 @@ export default function PermissionManage() {
             <Dialog header={"Thêm quyền"} visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }} closeIcon={true} icons={<i className='pi pi-close text-amber-400'></i>}>
                 <div>
                     <DataTable
-                        value={customers}
+                        value={user}
                         scrollable
                         paginator
                         lazy
@@ -222,21 +237,14 @@ export default function PermissionManage() {
                         header={renderHeaderCreate}
                         emptyMessage="No customers found."
                         className='w-full ' >
-                        <Column
-                            header="STT"
-                            frozen
-                            body={(_, options) => options.rowIndex + 1}
-                            style={{ width: '80px' }}
-                        />
-
+                        <Column selectionMode="multiple" frozen headerStyle={{ width: '3rem' }} />
                         <Column field="fullName" header="Họ và tên" style={{ minWidth: '12rem' }} />
                         <Column field="username" header="Tài khoản" style={{ minWidth: '12rem' }} />
                         <Column field="email" header="Gmail" style={{ minWidth: '12rem' }} />
-                        <Column selectionMode="multiple" frozen headerStyle={{ width: '3rem' }} />
                     </DataTable>
                     <div className='flex  justify-end pt-5 px-5'>
                         <Button className='!bg-gray-500 !mr-4' onClick={() => setVisible(false)}>Hủy</Button>
-                        <Button className='!bg-blue-500' onClick={() => handleSavePermisson}>Lưu</Button>
+                        <Button className='!bg-blue-500' onClick={() => handleSavePermisson()}>Lưu</Button>
                     </div>
                 </div>
             </Dialog>

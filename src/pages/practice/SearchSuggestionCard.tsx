@@ -6,12 +6,12 @@ import { Difficulty } from './difficultyEnum';
 import { Link } from 'react-router-dom';
 
 // Dữ liệu đầy đủ từ backend
-export interface SearchSuggestion {
-  active: boolean;
-  id: number;
+export interface SearchSuggestion extends SearchSuggestionCardProps {
+  id: number | null;
   title: string;
   difficulty: Difficulty;
   tags: string[];
+  isActive: boolean;
   completionRate: number;
   likes?: number;
   slug: string;
@@ -26,6 +26,18 @@ export interface SearchSuggestionCardProps {
   likes?: number;
   slug: string;
 }
+ export const getDifficultyColor = (difficulty: Difficulty) => {
+    switch (difficulty) {
+      case Difficulty.EASY:
+        return 'bg-green-500 text-white';
+      case Difficulty.MEDIUM:
+        return 'bg-orange-400 text-white';
+      case Difficulty.HARD:
+        return 'bg-red-500 text-white';
+      default:
+        return 'bg-gray-300 text-black';
+    }
+  };
 
 
 
@@ -37,18 +49,6 @@ export const SearchSuggestionCard: React.FC<SearchSuggestionCardProps> = ({
   likes = 100,
   slug,
 }) => {
-  const getDifficultyColor = () => {
-    switch (difficulty) {
-      case Difficulty.De:
-        return 'bg-green-500 text-white';
-      case Difficulty.TrungBinh:
-        return 'bg-orange-400 text-white';
-      case Difficulty.Kho:
-        return 'bg-red-500 text-white';
-      default:
-        return 'bg-gray-300 text-black';
-    }
-  };
 
 
   return (
@@ -56,7 +56,7 @@ export const SearchSuggestionCard: React.FC<SearchSuggestionCardProps> = ({
       <div className="w-64 p-4 bg-white rounded-xl shadow-md border border-gray-200 flex flex-col gap-3 hover:scale-105 hover:shadow-xl transition-transform duration-200">
         <div className="flex flex-col gap-2">
           <h3 className="text-base font-semibold text-blue-900 truncate">{title}</h3>
-          <div className={`w-fit px-3 py-1 text-xs font-semibold rounded-full ${getDifficultyColor()}`}>
+          <div className={`w-fit px-3 py-1 text-xs font-semibold rounded-full ${getDifficultyColor(difficulty)}`}>
             {difficulty}
           </div>
         </div>

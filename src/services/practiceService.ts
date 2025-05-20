@@ -3,23 +3,23 @@ import axios from 'axios';
 import {  SearchSuggestionCardProps } from '../pages/practice/SearchSuggestionCard';
 import { Difficulty } from '../pages/practice/difficultyEnum';
 
-const convertDifficulty = (raw: string): Difficulty => {
+export const convertDifficulty = (raw: string): Difficulty => {
   switch (raw.trim().toUpperCase()) {
     case 'EASY':
-      return Difficulty.De;
+      return Difficulty.EASY;
     case 'MEDIUM':
-      return Difficulty.TrungBinh;
+      return Difficulty.MEDIUM;
     case 'HARD':
-      return Difficulty.Kho;
+      return Difficulty.HARD;
     default:
-      return Difficulty.De;
+      return Difficulty.EASY;
   }
 };
 
 // Gọi API lấy danh sách bài tập
 export const fetchPractices = async (): Promise<SearchSuggestionCardProps[]> => {
   try {
-    const response = await axios.get('http://localhost:5000/api/practices');
+    const response = await axios.get('http://localhost:5000/api/practices?active=true');
     return response.data.map((item: any) => ({
       title: item.title,
       difficulty: convertDifficulty(item.difficulty),

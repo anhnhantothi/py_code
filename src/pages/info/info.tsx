@@ -2,22 +2,37 @@ import { useEffect, useMemo, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { PencilIcon, CheckIcon, XIcon } from "lucide-react";
-import { Card } from "antd";
-import { createUser, generateFakeUser, User } from "../customer/model";
 import { useLocation } from "react-router-dom";
 import { Avatar } from "primereact/avatar";
+import { createUser, User } from "../customer/model";
 
 // Giả sử bạn có sẵn helper cho fetch API
-const getPatientProfile = async () => {
-  const response = await fetch("/api/patient-profile");
-  if (!response.ok) throw new Error("Failed to fetch patient profile");
+const getPatientProfile = async (userId: string) => {
+  const token = localStorage.getItem("token");
+  console.log(token)
+  const response = await fetch(`http://localhost:5000/profile?userId=${userId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`Failed to fetch profile: ${response.status} - ${err}`);
+  }
+
   return await response.json();
 };
 
-const updatePatientProfile = async (data: any) => {
-  const response = await fetch("/api/patient-profile", {
+const updatePatientProfile = async (data: any, userId: string) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`http://localhost:5000/patient-profile?userId=${userId}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json", Authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify(data),
   });
   if (!response.ok) throw new Error("Failed to update patient profile");
@@ -39,10 +54,9 @@ const PatientProfileUI = () => {
     const userId = searchParams.get("userId");
 
     if (userId) {
-      setPatientData(generateFakeUser());
-      // getPatientProfile()
-      //   .then((data) => setPatientData(data))
-      //   .catch((err) => console.error(err));
+      getPatientProfile(userId)
+        .then((data) => setPatientData(data))
+        .catch((err) => console.error(err));
     } else {
       const emptyUser: User = createUser();
       setPatientData(emptyUser)
@@ -62,25 +76,23 @@ const PatientProfileUI = () => {
 
   const toggleEdit = async () => {
     if (isEditing) {
-      try {
-        await updatePatientProfile(patientData);
-        alert("Cập nhật thành công");
-
-      } catch (err) {
-        alert("Lỗi khi cập nhật dữ liệu");
-        console.error(err);
-        return
+      const searchParams = new URLSearchParams(location.search);
+      const userId = searchParams.get("userId");
+      if (userId) {
+        try {
+          await updatePatientProfile(patientData, userId);
+        } catch (err) {
+          console.error(err);
+          return
+        }
+      } else {
+        ///create
       }
     }
+
     setIsEditing(!isEditing);
   };
 
-  const getInitials = (fullName: string | undefined) => {
-    if (!fullName) return "";
-    const names = fullName.trim().split(" ");
-    if (names.length === 1) return names[0].charAt(0).toUpperCase();
-    return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
-};
 
   return (
     <div className="mx-auto w-[1220px] h-screen">
@@ -90,10 +102,10 @@ const PatientProfileUI = () => {
 
           <div>
             <h2 className="text-2xl font-semibold">{patientData?.fullName}
-              <span className="bg-green-100 text-green-700 text-sm px-2 py-1 rounded-lg">
+              <span className="ml-2 bg-green-100 text-green-700 text-sm px-2 py-1 rounded-lg">
                 {patientData?.enabled ? "Active" : "Inactive"}
               </span></h2>
-            <p className="text-gray-500">📞 {patientData?.phoneNumber}</p>
+            <p className="text-gray-500">📞 {patientData?.phone}</p>
             {
               patientData?.vip ? <span className="bg-yellow-100 text-yellow-700 text-sm px-2 py-1 rounded-lg hover:cursor-pointer">VIP</span>
                 : <span className="bg-blue-100 text-blue-700 text-sm px-2 py-1 rounded-lg hover:cursor-pointer">Bạn còn {patientData?.useNumber ?? 0} lần dùng thử, nâng cấp ngay !!!</span>
@@ -128,7 +140,7 @@ const PatientProfileUI = () => {
         <div className="grid grid-cols-2 gap-6 mb-6">
           {patientData && (
             <>
-              {[ "email", "job", "fullName", "phoneNumber", "address"].map((field) => (
+              {["email", "job", "fullName", "phone", "address"].map((field) => (
                 <div key={field}>
                   <strong>
                     {field.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}:
@@ -168,3 +180,11 @@ const PatientProfileUI = () => {
 };
 
 export default PatientProfileUI;
+
+
+export const getInitials = (fullName: string | undefined) => {
+  if (!fullName) return "";
+  const names = fullName.trim().split(" ");
+  if (names.length === 1) return names[0].charAt(0).toUpperCase();
+  return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
+};

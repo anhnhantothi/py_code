@@ -17,7 +17,7 @@ import PermissionManage from './pages/permission/permission';
 import DashboardPage from './pages/dashboard/dashboard';
 // import PracticeManage from './pages/practice/practice';
 import PracticeDetailPage from './pages/practice/PracticeDetailPage';
-import PracticeManage from './pages/practice/practice';
+import PracticeManage from './pages/practice-management/practice-management';
 
 
 function App() {
