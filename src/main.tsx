@@ -3,16 +3,19 @@ import './index.css'
 import App from './App.tsx'
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { AuthProvider } from './context/auth_context.tsx'
+import { AuthProvider } from './contexts/auth_context.tsx'
 import { PrimeReactProvider } from 'primereact/api';
+import { ToastProvider } from './contexts/ToastContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <PrimeReactProvider>
-    <BrowserRouter>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
+      <BrowserRouter>
+        <ToastProvider>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </ToastProvider>
       </BrowserRouter>
     </PrimeReactProvider>
   </React.StrictMode>

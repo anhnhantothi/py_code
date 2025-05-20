@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import '../../assets/css/login.css';
 import { useNavigate } from 'react-router-dom';
 import { login, LoginCredentials } from '../../services/loginService';
-import { useAuth } from '../../context/auth_context';
+import { useAuth } from '../../contexts/auth_context';
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -18,7 +18,6 @@ const LoginPage: React.FC = () => {
       const result = await login(credentials, loginContextFn); // Gọi API và cập nhật AuthContext
 
       if (result.success) {
-        alert('Login successful!');
         navigate('/', { replace: true }); // Chuyển trang ngay
       } else {
         alert(result.error || 'Login failed');

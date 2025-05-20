@@ -1,9 +1,10 @@
-// File: src/components/NavigationMenu.tsx
-import React from 'react';
-import { Menu, Button } from 'antd';
-import { HomeOutlined, BookOutlined, FileTextOutlined, CodeOutlined } from '@ant-design/icons';
+import React, { useState, useRef } from 'react';
+import { Menu as AntMenu } from 'antd';
+import { HomeOutlined, BookOutlined, FileTextOutlined, CodeOutlined, BarChartOutlined, DashboardOutlined, EditOutlined, ReadOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/auth_context';
+import { useAuth } from '../contexts/auth_context';
+import { Avatar } from 'primereact/avatar';
+import { Menu } from 'primereact/menu';
 
 const menuItems = [
   { label: <Link to="/">Home</Link>, key: '/', icon: <HomeOutlined /> },
@@ -12,50 +13,55 @@ const menuItems = [
   { label: <Link to="/workspace">Workspace</Link>, key: '/workspace', icon: <CodeOutlined /> },
 ];
 
-{/* <Route path="/customer" element={<CustomerManage />} />
-<Route path="/permission" element={<PermissionManage />} />
-<Route path="/dashboard" element={<DashboardPage />} />
-<Route path="/practice-management" element={<PracticeManage />} /> */}
 const menuItemsAdmin = [
-  { label: <Link to="/dashboard">Dashboard</Link>, key: '/dashboard', icon: <FileTextOutlined /> },
-  { label: <Link to="customer/">Customer</Link>, key: '/customer', icon: <HomeOutlined /> },
-  { label: <Link to="/permission">Permission</Link>, key: '/permission', icon: <BookOutlined /> },
-  { label: <Link to="/practice-management">Practice management</Link>, key: '/practice-management', icon: <CodeOutlined /> },
+  { label: <Link to="/dashboard">Bảng thống kê</Link>, key: '/dashboard', icon: <BarChartOutlined /> },
+  { label: <Link to="/customer">Quản lí người dùng</Link>, key: '/customer', icon: <UserOutlined /> },
+  { label: <Link to="/permission">Quản lí quyền</Link>, key: '/permission', icon: <SafetyOutlined /> },
+  { label: <Link to="/practice-management">Quản lí bài học</Link>, key: '/practice-management', icon: <ReadOutlined /> },
+  { label: <Link to="/lession-management">Quản lí bài tập</Link>, key: '/lession-management', icon: <EditOutlined /> },
 ];
-
 const NavigationMenu: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const {isAuthenticated, username, logout} = useAuth();  
+  const { isAuthenticated, username, logout } = useAuth();
 
-  const selectedKey = menuItems.find(item => item.key === location.pathname)?.key || '/';
+  // Khai báo rõ kiểu ref ở đây:
+  const menuRef = useRef<Menu>(null);
 
-  const onAuthClick = () => {
-    if (isAuthenticated) {
-      logout();
-      navigate('/');
-    } else {
-      navigate('/login');
-    }
-  };
-  
+  const selectedKey = menuItemsAdmin.find(item => item.key === location.pathname)?.key || '/';
+
+  const menuItemsUser = [
+    { label: 'Thông tin cá nhân', command: () => navigate('/profile') },
+    {
+      label: 'Đăng xuất',
+      command: () => {
+        logout();
+        navigate('/login');
+      },
+    },
+  ];
 
   return (
-    // Full-screen fixed nav bar
     <div className="w-screen fixed top-0 left-0 z-10 flex items-center justify-between bg-white shadow-md px-6">
-      <Menu
+      <AntMenu
         theme="light"
         mode="horizontal"
         selectedKeys={[selectedKey]}
         items={menuItemsAdmin}
         style={{ flex: 1, border: 'none' }}
       />
-        <div>
-          {isAuthenticated ? `Chào, ${username}` : 'Chào bạn'}
-        </div>
-      <Button type="primary" onClick={onAuthClick} className="ml-4">
-        {isAuthenticated ? 'Logout' : 'Login'}
-      </Button>
+      <div
+        className="user-button flex items-center gap-2 hover:cursor-pointer"
+        onClick={(e) => menuRef.current?.toggle(e)}
+      >
+        <span>{username || 'Ánh Nhàn'}</span>
+        <Avatar
+          image="https://plus.unsplash.com/premium_photo-1682125468951-f9e8a1f53df6?q=80&w=1976&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          size="normal"
+          shape="circle"
+        />
+        <Menu model={menuItemsUser} popup ref={menuRef} />
+      </div>
     </div>
   );
 };
