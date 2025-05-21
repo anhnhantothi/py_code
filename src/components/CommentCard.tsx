@@ -4,6 +4,7 @@ import { Avatar } from 'primereact/avatar';
 import { ThumbsUp } from 'lucide-react';
 import { FaComment } from 'react-icons/fa';
 import CommentInputBox from './CommentInput';
+import { formatDistanceToNow, parseISO, differenceInDays } from 'date-fns';
 
 export type CommentDto = {
   id: number;
@@ -11,7 +12,7 @@ export type CommentDto = {
   practiceId: number;
   content: string;
   likes: number;
-  createdAt: string;
+  created_at: any;
   replies: CommentDto[];
   username: string;
 };
@@ -44,7 +45,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment, handleReply, handleL
         />
         <div className="flex-1">
           <div className="text-lg font-semibold text-gray-700">{comment.name}</div>
-          <div className="text-sm text-gray-500">{comment.time}</div>
+          <div className="text-sm text-gray-500">{getRelativeTime(comment.created_at)}</div>
           <p className="mt-2 text-gray-800">{comment.content}</p>
 
           <div className="flex items-center gap-4 mt-4">
@@ -72,7 +73,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment, handleReply, handleL
                   comment={{
                     ...reply,
                     name: comment.name||`User ${reply.userId}`,
-                    time: new Date(reply.createdAt).toLocaleString(),
+                    time: new Date(reply.created_at).toLocaleString(),
                   }}
                   handleReply={handleReply}
                   handleLike={handleLike}
@@ -87,3 +88,26 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment, handleReply, handleL
 };
 
 export default CommentCard;
+
+
+const getRelativeTime = (createdAt: Date | string) => {
+  const createdDate = new Date(createdAt);
+  const createdLocal = new Date(createdDate.getTime() + 7 * 60 * 60 * 1000); // +7h
+
+  const now = new Date();
+  const diffMs = now.getTime() - createdLocal.getTime();
+  const diffSeconds = Math.floor(diffMs / 1000);
+  const diffMinutes = Math.floor(diffSeconds / 60);
+  const diffHours = Math.floor(diffMinutes / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffDays > 7) {
+    return createdLocal.toLocaleString('vi-VN'); // hiển thị theo giờ Việt Nam
+  }
+
+  if (diffDays >= 1) return `${diffDays} ngày trước`;
+  if (diffHours >= 1) return `${diffHours} giờ trước`;
+  if (diffMinutes >= 1) return `${diffMinutes} phút trước`;
+  return `Vừa xong`;
+};
+

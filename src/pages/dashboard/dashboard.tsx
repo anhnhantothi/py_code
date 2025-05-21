@@ -57,7 +57,7 @@ const DashboardPage: React.FC = () => {
     }, []);
 
     return (
-        <div className="bg-white">
+        <div className="bg-white !h-[1120px]">
             <div className="w-full mx-auto bg-gray-50 p-4 rounded-2xl gap-5 flex">
                 <label className="w-[50%]">
                     <div className="w-full bg-white p-4 rounded-2xl shadow-md ">
@@ -119,8 +119,8 @@ const DashboardPage: React.FC = () => {
                                 <Legend />
 
                                 {/* stacked bars */}
-                                <Bar dataKey="newUsers" stackId="a" name="Kích hoạt vip" fill="#8884d8" />
-                                <Bar dataKey="vip" stackId="a" name="Người dùng" fill="#ffa726" />
+                                <Bar dataKey="newUsers" stackId="a" name="Người dùng" fill="#8884d8" />
+                                <Bar dataKey="vip" stackId="a" name="Kích hoạt vip " fill="#ffa726" />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>

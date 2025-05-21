@@ -8,12 +8,12 @@ import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
 import moment from 'moment';
 import debounce from 'lodash.debounce';
 import { User } from './model';
-import { paginatorTemplate, rowsPerPageOptions } from '../../untils/common';
-import { Button } from 'primereact/button';
+import {  rowsPerPageOptions } from '../../untils/common';
 import { Trash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Checkbox } from 'primereact/checkbox';
 import { useToast } from '../../contexts/ToastContext';
+import { get } from 'http';
 
 export const getAllUserInfo = async () => {
   const token = localStorage.getItem("token");
@@ -148,7 +148,7 @@ export default function CustomerManage() {
     setLoading(true)
     deleteUserInfo(id).then((e) => {
       toast.showSuccess("Xóa thành công")
-
+      getDataUser();
     }).catch(() => {
       toast.showError("Delete fail")
     })
@@ -214,7 +214,6 @@ export default function CustomerManage() {
     setLoading(true)
     getAllUserInfo().then(e => {
       setCustomers(e)
-      setTotalRecords(50)
     }).catch(e => {
       console.log(e)
     });
@@ -266,8 +265,6 @@ export default function CustomerManage() {
         rows={lazyParams.rows}
         totalRecords={totalRecords}
         loading={loading}
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} customer"
-        paginatorTemplate={paginatorTemplate}
         rowsPerPageOptions={rowsPerPageOptions}
         onPage={onPageChange}
         onSelectionChange={(e) => {

@@ -5,16 +5,25 @@ import CommentCard from './CommentCard';
 import { CommentDto } from './types';
 import { useParams } from 'react-router-dom';
 import { fetchComments, getPracticeIdBySlug, likeComment, postComment } from '../services/commentService';
-
-const CommentSection = () => {
+import { useAuth } from '../contexts/auth_context';
+interface CommentSectionProps {
+  id: any;
+}
+const CommentSection = ({id}:CommentSectionProps) => {
   const { slug } = useParams();
   const [comments, setComments] = useState<CommentDto[]>([]);
-  const [practiceId, setPracticeId] = useState<number | null>(null);
-  const _practiceId = 2;
+  const _practiceId = id;
+  const { user } = useAuth();
+  
 
   useEffect(() => {
+    loadComments(_practiceId);
     if (slug) {
-      getPracticeIdBySlug(slug).then(setPracticeId);
+      getPracticeIdBySlug(slug).then((id) => {
+        if (id) {
+          loadComments(id);
+        }
+      });
     }
   }, [slug]);
 
@@ -23,27 +32,22 @@ const CommentSection = () => {
     setComments(data);
   };
 
-  useEffect(() => {
-    if (_practiceId) {
-      loadComments(_practiceId);
-    }
-  }, [practiceId]);
 
   const handleCommentSubmit = async (content: string) => {
     if (!_practiceId) return;
-    await postComment(1, _practiceId, content); // user_id fake
+    await postComment(user!.id!, _practiceId, content); // user_id fake
     loadComments(_practiceId);
   };
 
   const handleReplySubmit = async (content: string, parentId: number) => {
     if (!_practiceId) return;
-    await postComment(1, _practiceId, content, parentId);
+    await postComment(user!.id!, _practiceId, content, parentId);
     loadComments(_practiceId);
   };
 
   const handleLike = async (id: number) => {
     await likeComment(id);
-    if (practiceId) loadComments(practiceId);
+    if (_practiceId) loadComments(_practiceId);
   };
 
   return (
@@ -56,7 +60,7 @@ const CommentSection = () => {
             comment={{
               ...comment,
               name: comment.username,
-              time: new Date(comment.createdAt).toLocaleString(),
+              time: new Date(comment.created_at).toLocaleString(),
             }}
             handleReply={handleReplySubmit}
             handleLike={handleLike}

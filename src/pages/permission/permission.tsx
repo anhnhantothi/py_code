@@ -5,13 +5,12 @@ import { InputText } from 'primereact/inputtext';
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
-import moment from 'moment';
 import debounce from 'lodash.debounce';
-import { paginatorTemplate, rowsPerPageOptions } from '../../untils/common';
+import {  rowsPerPageOptions } from '../../untils/common';
 import {  User } from '../customer/model';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
-import { CheckIcon, Trash } from 'lucide-react';
+import {  Trash } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
 import { getAllUserInfo } from '../customer/customer';
 
@@ -198,7 +197,6 @@ export default function PermissionManage() {
                 totalRecords={totalRecords}
                 loading={loading}
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} customer"
-                paginatorTemplate={paginatorTemplate}
                 rowsPerPageOptions={rowsPerPageOptions}
                 onPage={onPageChange}
                 header={header}
@@ -228,7 +226,6 @@ export default function PermissionManage() {
                         totalRecords={totalRecords}
                         loading={loading}
                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
-                        paginatorTemplate={paginatorTemplate}
                         rowsPerPageOptions={rowsPerPageOptions}
                         onPage={onPageChange}
                         selection={permission}

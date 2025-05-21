@@ -6,6 +6,6 @@ export interface CommentDto {
   practiceId: number;
   content: string;
   likes: number;
-  createdAt: string;
+  created_at: string;
   replies: CommentDto[];
 }

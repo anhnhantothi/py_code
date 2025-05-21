@@ -38,8 +38,8 @@ const Footer: React.FC = () => {
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Liên kết nhanh</h3>
           <ul className="space-y-2 text-gray-600">
             <li><Link to="/" className="hover:text-gray-800">Trang Chủ</Link></li>
-            <li><Link to="/lesson" className="hover:text-gray-800">Lesson</Link></li>
-            <li><Link to="/document" className="hover:text-gray-800">Document</Link></li>
+            <li><Link to="/lesson" className="hover:text-gray-800">Bài học</Link></li>
+            <li><Link to="/practice" className="hover:text-gray-800">Thực hành</Link></li>
             <li><Link to="/workspace" className="hover:text-gray-800">Workspace</Link></li>
           </ul>
         </div>

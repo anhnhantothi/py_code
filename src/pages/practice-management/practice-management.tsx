@@ -6,7 +6,7 @@ import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
 import debounce from 'lodash.debounce';
-import { paginatorTemplate, rowsPerPageOptions } from '../../untils/common';
+import { rowsPerPageOptions } from '../../untils/common';
 import { Button } from 'primereact/button';
 import { Trash } from 'lucide-react';
 import { Chips } from 'primereact/chips';
@@ -174,7 +174,8 @@ export default function PracticeManage() {
             header: 'Xác nhận xóa người dùng',
             icon: 'pi pi-info-circle',
             defaultFocus: 'reject',
-            acceptClassName: 'p-button-danger',
+            acceptClassName: '!bg-[#E4080A]',
+
             acceptLabel: 'Xác nhận',
             rejectLabel: 'Hủy',
             accept: () => acceptDel(id),
@@ -335,13 +336,10 @@ export default function PracticeManage() {
                 value={customers}
                 scrollable
                 paginator
-                lazy
                 first={lazyParams.first}
                 rows={lazyParams.rows}
                 totalRecords={totalRecords}
                 loading={loading}
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} customer"
-                paginatorTemplate={paginatorTemplate}
                 rowsPerPageOptions={rowsPerPageOptions}
                 onPage={onPageChange}
                 onSelectionChange={(e) => handleEdit(e.value)}

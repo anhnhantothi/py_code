@@ -17,14 +17,14 @@ import CertificatePreviewModal from '../../components/CertificatePreviewModal';
 
 const { Content, Sider } = Layout;
 
-interface Sublesson {
+export  interface Sublesson {
   id: number;
   type: 'title' | 'text' | 'cmd' | 'example';
   content: string;
   sort_order: number;
 }
 
-interface Lesson {
+export  interface Lesson {
   id: number;
   title: string;
   level: string;
@@ -33,15 +33,12 @@ interface Lesson {
   sublessons: Sublesson[];
 }
 
-interface LessonItem {
-  id: number;
-  title: string;
-}
 
-interface Topic {
+export interface Topic {
   id: number;
   name: string;
-  lessons: LessonItem[];
+  sort_order: number;
+  lessons: Lesson[];
 }
 
 const SublessonBlock: React.FC<{ block: Sublesson }> = memo(({ block }) => {
@@ -141,7 +138,7 @@ const LessonPage: React.FC = () => {
 
           // Tìm topic chứa bài này
           const topic = fetchedTopics.find((t: Topic) =>
-            t.lessons.some((l: LessonItem) => l.id === fetchedLesson.id)
+            t.lessons.some((l: Lesson) => l.id === fetchedLesson.id)
           );
           if (topic) {
             setCurrentTopic(topic);

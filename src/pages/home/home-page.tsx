@@ -2,12 +2,16 @@
 import React, { useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import NavigationMenu from '../../components/navigationMenu';
-import Footer from '../../components/footer';
 import '../../assets/css/global.css';
 import '../../assets/css/homepage.css';
 import { useAuth } from '../../contexts/auth_context';
 import AIImage from '../../assets/images/AI-pic.jpg';
+import CodeEditor from '../../assets/images/code-editor.jpg';
+import LearnCode from '../../assets/images/learn-code.jpg';
+import Workspace from '../../assets/images/wsp.gif';
+import WSP from '../../assets/images/wsp.jpg';
+
+
 import {
   BookFilled,
   CheckCircleOutlined,
@@ -18,7 +22,7 @@ import {
 } from '@ant-design/icons';
 
 const HomePage: React.FC = () => {
-  const { username, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
@@ -26,9 +30,6 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-gray-100 text-gray-700">
-      {/* Navigation */}
-      <NavigationMenu />
-
       <div className="flex-1 overflow-auto">
         {/* Hero Section (giữ nguyên như cũ) */}
         <section className="w-full min-h-screen bg-gradient-to-r from-indigo-50 to-white flex items-center">
@@ -38,9 +39,9 @@ const HomePage: React.FC = () => {
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
                 Chào mừng{' '}
                 <span style={{ color: '#4F46E5' }}>
-                  {isAuthenticated && username ? username : 'bạn'}
+                  {isAuthenticated}
                 </span>{' '}
-                đến với Học Python Online
+               {user?.fullName ?? "bạn"} đến với Học Python Online
               </h1>
               <p className="text-lg text-gray-700">
                 Trung tâm học Python trực tuyến với tài liệu, bài tập và môi trường thử nghiệm ngay trên
@@ -104,9 +105,9 @@ const HomePage: React.FC = () => {
               </p>
             </div>
             <img
-              src="../../assets/images/AI-pic.jpg"
+              src={Workspace}
               alt="Code Editor"
-              className="rounded-2xl shadow-md flex-1"
+              className="rounded-2xl shadow-md flex-1 h-[300px]"
             />
           </div>
         </section>
@@ -120,9 +121,9 @@ const HomePage: React.FC = () => {
           >
             <div className="grid md:grid-cols-2 gap-10 items-center">
               <img
-                src="https://source.unsplash.com/featured/?books"
+                src={LearnCode}
                 alt="Tài liệu"
-                className="rounded-2xl shadow-md w-full"
+                className="rounded-2xl shadow-md w-full h-[300px]"
               />
               <div>
                 <h3 className="text-3xl font-semibold text-indigo-600 mb-4">Tài liệu học tập</h3>
@@ -147,7 +148,7 @@ const HomePage: React.FC = () => {
                 </p>
               </div>
               <img
-                src="https://source.unsplash.com/featured/?assignment"
+                src={CodeEditor}
                 alt="Bài tập"
                 className="rounded-2xl shadow-md w-full"
               />
@@ -161,9 +162,9 @@ const HomePage: React.FC = () => {
           >
             <div className="grid md:grid-cols-2 gap-10 items-center">
               <img
-                src="https://source.unsplash.com/featured/?workspace"
+                src={WSP}
                 alt="Workspace"
-                className="rounded-2xl shadow-md w-full"
+                className="rounded-2xl shadow-md w-full h-[350px]"
               />
               <div>
                 <h3 className="text-3xl font-semibold text-indigo-600 mb-4">Workspace Online</h3>
@@ -202,7 +203,6 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <Footer />
     </div>
   );
 };

@@ -8,31 +8,50 @@ import { Menu } from 'primereact/menu';
 import { getInitials } from '../pages/info/info';
 
 const menuItems = [
-  { label: <Link to="/">Home</Link>, key: '/', icon: <HomeOutlined /> },
-  { label: <Link to="/lesson">Lesson</Link>, key: '/lesson', icon: <BookOutlined /> },
-  { label: <Link to="/practice">Practice</Link>, key: '/practice', icon: <FileTextOutlined /> },
+  { label: <Link to="/home">Trang chủ</Link>, key: '/home', icon: <HomeOutlined /> },
+  { label: <Link to="/lesson">Bài học</Link>, key: '/lesson', icon: <BookOutlined /> },
+  { label: <Link to="/practice">Thực hành</Link>, key: '/practice', icon: <FileTextOutlined /> },
   { label: <Link to="/workspace">Workspace</Link>, key: '/workspace', icon: <CodeOutlined /> },
 ];
 
 const menuItemsAdmin = [
-  { label: <Link to="/dashboard">Bảng thống kê</Link>, key: '/dashboard', icon: <BarChartOutlined /> },
-  { label: <Link to="/customer">Quản lí người dùng</Link>, key: '/customer', icon: <UserOutlined /> },
-  { label: <Link to="/permission">Quản lí quyền</Link>, key: '/permission', icon: <SafetyOutlined /> },
-  { label: <Link to="/practice-management">Quản lí bài học</Link>, key: '/practice-management', icon: <ReadOutlined /> },
-  { label: <Link to="/lession-management">Quản lí bài tập</Link>, key: '/lession-management', icon: <EditOutlined /> },
+  { label: <Link to="/admin/dashboard">Bảng thống kê</Link>, key: '/admin/dashboard', icon: <BarChartOutlined /> },
+  { label: <Link to="/admin/customer">Quản lí người dùng</Link>, key: '/admin/customer', icon: <UserOutlined /> },
+  { label: <Link to="/admin/permission">Quản lí quyền</Link>, key: '/admin/permission', icon: <SafetyOutlined /> },
+  { label: <Link to="/admin/practice-management">Quản lí bài tập</Link>, key: '/admin/practice-management', icon: <ReadOutlined /> },
+  { label: <Link to="/admin/lesson-management">Quản lí bài học</Link>, key: '/admin/lesson-management', icon: <EditOutlined /> },
 ];
 const NavigationMenu: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, user, logout } = useAuth();
+  const { user, logout } = useAuth();
+  const isAdminRoute = location.pathname.includes('/admin');
 
   // Khai báo rõ kiểu ref ở đây:
   const menuRef = useRef<Menu>(null);
 
-  const selectedKey = menuItemsAdmin.find(item => item.key === location.pathname)?.key || '/';
+const selectedKey = (isAdminRoute
+  ? menuItemsAdmin.find(item => location.pathname.startsWith(item.key))
+  : menuItems.find(item => location.pathname.startsWith(item.key))
+)?.key || '';
+
 
   const menuItemsUser = [
     { label: 'Thông tin cá nhân', command: () => navigate(`/profile?userId=${user?.id}`) },
+    ...(user?.is_admin
+      ? [
+        {
+          label: !isAdminRoute ? 'Quản trị hệ thống' : 'Trang chủ',
+          command: () => {
+            if (isAdminRoute) {
+              navigate('/home')
+            } else {
+              navigate('/admin/dashboard')
+            }
+          },
+        },
+      ]
+      : []),
     {
       label: 'Đăng xuất',
       command: () => {
@@ -41,23 +60,21 @@ const NavigationMenu: React.FC = () => {
       },
     },
   ];
-  console.log(user)
   return (
-    // Full-screen fixed nav bar
     <div className=" w-screen fixed top-0 left-0 z-10 flex items-center justify-between bg-white shadow-md px-6">
       <AntMenu
         theme="light"
         mode="horizontal"
         selectedKeys={[selectedKey]}
-        items={menuItems}
+        items={isAdminRoute ? menuItemsAdmin : menuItems}
         style={{ flex: 1, border: 'none' }}
       />
       <div
         className="user-button flex items-center gap-2 hover:cursor-pointer"
         onClick={(e) => menuRef.current?.toggle(e)}
       >
-        <span>{user?.fullName ?? "Người dùng"}</span>
-        <Avatar label={getInitials(user?.fullName ?? "Người dùng")} className="mr-4" size="normal" />
+        <span>{user?.full_name ?? "Người dùng"}</span>
+        <Avatar label={getInitials(user?.full_name ?? user?.fullName ?? "Người dùng")} className="mr-4" size="normal" />
         <Menu model={menuItemsUser} popup ref={menuRef} />
       </div>
     </div>

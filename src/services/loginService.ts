@@ -25,6 +25,9 @@ export async function login(
   const data = await response.json();
 
   if (response.ok) {
+    console.log(data.user.isAdmin)
+        console.log(data.user.is_admin)
+
     localStorage.setItem('token', data.access_token);
     localStorage.setItem("user", JSON.stringify(data.user));
     loginContextFn(data.user); 

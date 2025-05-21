@@ -56,7 +56,7 @@ const handleSubmitCode = (code: string) => {
 
         <div className="bg-white shadow-md p-5 rounded-xl border border-gray-200">
           <h2 className="text-lg font-semibold text-gray-700 mb-3">💬 Bình luận</h2>
-          <CommentSection />
+          <CommentSection id={data.id as number} />
         </div>
       </div>
 
