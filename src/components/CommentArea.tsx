@@ -14,6 +14,7 @@ const CommentSection = ({id}:CommentSectionProps) => {
   const [comments, setComments] = useState<CommentDto[]>([]);
   const _practiceId = id;
   const { user } = useAuth();
+  console.log("Current User ID:", user?.id, "Username:", user?.username, user?.full_name);
   
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const CommentSection = ({id}:CommentSectionProps) => {
 
   const handleCommentSubmit = async (content: string) => {
     if (!_practiceId) return;
-    await postComment(user!.id!, _practiceId, content); // user_id fake
+    await postComment(user!.id!, _practiceId, content); 
     loadComments(_practiceId);
   };
 

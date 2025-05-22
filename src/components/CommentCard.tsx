@@ -4,18 +4,19 @@ import { Avatar } from 'primereact/avatar';
 import { ThumbsUp } from 'lucide-react';
 import { FaComment } from 'react-icons/fa';
 import CommentInputBox from './CommentInput';
-import { formatDistanceToNow, parseISO, differenceInDays } from 'date-fns';
+import { CommentDto } from './types';
+// import { formatDistanceToNow, parseISO, differenceInDays } from 'date-fns';
 
-export type CommentDto = {
-  id: number;
-  userId: number;
-  practiceId: number;
-  content: string;
-  likes: number;
-  created_at: any;
-  replies: CommentDto[];
-  username: string;
-};
+// export type CommentDto = {
+//   id: number;
+//   userId: number;
+//   practiceId: number;
+//   content: string;
+//   likes: number;
+//   created_at: any;
+//   replies: CommentDto[];
+//   username: string;
+// };
 
 interface EnrichedComment extends CommentDto {
   name: string;

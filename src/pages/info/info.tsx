@@ -7,6 +7,7 @@ import { Avatar } from "primereact/avatar";
 import { createUser, User } from "../customer/model";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { useToast } from "../../contexts/ToastContext";
+// import { useAuth } from "../../contexts/auth_context";
 
 const getPatientProfile = async (userId: string) => {
   const token = localStorage.getItem("token");
@@ -73,6 +74,8 @@ const PatientProfileUI = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const userId = searchParams.get("userId");
+    // const { user } = useAuth();
+    // const userId = user?.id;
 
     if (userId) {
       getPatientProfile(userId)

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { API_BASE } from '../config';
 
 export const getPracticeIdBySlug = async (slug: string) => {
-  const res = await axios.get(`/api/practice/slug/${slug}`);
+  const res = await axios.get(`/api/practices/slug/${slug}`);
   return res.data.id;
 };
 
