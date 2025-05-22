@@ -169,7 +169,7 @@ const LessonPage: React.FC = () => {
   if (loading) {
     return (
       <div className="w-screen h-screen flex items-center justify-center bg-white">
-        <Spin size="large" tip="Đang tải..." />
+        <Spin size="large" tip="Đang tải..." fullscreen />
       </div>
     );
   }

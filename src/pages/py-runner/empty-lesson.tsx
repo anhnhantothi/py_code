@@ -1,6 +1,6 @@
 // File: src/components/EmptyLesson.tsx
 import React from 'react';
-import { Button, List, Timeline, Typography } from 'antd';
+import { Button, Timeline, Typography } from 'antd';
 import {
   BookFilled,
   CheckCircleOutlined,
@@ -54,23 +54,20 @@ const EmptyLesson: React.FC<Props> = ({ onPromptSidebar }) => {
       </section>
 
       {/* Outcomes Section */}
-      <section className="bg-gray-50 py-20">
-      <div className="container mx-auto px-4 max-w-2xl">
-        <Typography.Title level={2} className="text-gray-800 mb-6 text-center">
-          Sau khi hoàn thành, bạn sẽ:
-        </Typography.Title>
-        <Timeline mode="left">
-          {outcomes.map((item, idx) => (
-            <Timeline.Item
-              key={idx}
-              dot={<CheckCircleOutlined style={{ fontSize: '16px', color: '#52c41a' }} />}
-            >
-              <Typography.Text className="text-gray-700">{item}</Typography.Text>
-            </Timeline.Item>
-          ))}
-        </Timeline>
-      </div>
-    </section>
+      <section className="bg-indigo-50 py-20">
+        <div className="container mx-auto px-4 max-w-2xl">
+          <Typography.Title level={2} className="text-gray-800 mb-6 text-center">
+            Sau khi hoàn thành, bạn sẽ:
+          </Typography.Title>
+          <Timeline
+            mode="left"
+            items={outcomes.map((item) => ({
+              children: <Typography.Text className="text-gray-700">{item}</Typography.Text>,
+              dot: <CheckCircleOutlined style={{ fontSize: '16px', color: '#52c41a' }} />,
+            }))}
+          />
+        </div>
+      </section>
 
       {/* Topics Section */}
       <section className="bg-white py-20">

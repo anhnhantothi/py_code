@@ -15,7 +15,7 @@ const CertificatePreviewModal: React.FC<CertificatePreviewModalProps> = ({
   return (
     <Modal
       title="Certificate Preview"
-      visible={visible}
+      open={visible}
       onCancel={onCancel}
       footer={null}
       width="80vw"
