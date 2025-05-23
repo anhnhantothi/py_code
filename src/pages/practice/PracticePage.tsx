@@ -22,6 +22,7 @@ export default function PracticePage() {
         tags: item.tags || [],
         completionRate: item.completionRate || 0,
         likes: item.likes || 0,
+        isCompleted: item.isCompleted,
       }));
       setData(mapped);
     };
