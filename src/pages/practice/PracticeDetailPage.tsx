@@ -83,7 +83,8 @@ const handleSubmitCode = (code: string) => {
           visible={showReviewModal}
           code={submittedCode}
           description={data.description}
-          sampleAnswer={data.sampleAnswer} // nếu có
+          sampleAnswer={data.sampleAnswer} // if exists
+          slug={data.slug}
           onClose={() => setShowReviewModal(false)}
         />
       </div>

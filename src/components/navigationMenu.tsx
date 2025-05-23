@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Menu as AntMenu } from 'antd';
-import { HomeOutlined, BookOutlined, FileTextOutlined, CodeOutlined, BarChartOutlined, DashboardOutlined, EditOutlined, ReadOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons';
+import { HomeOutlined, BookOutlined, FileTextOutlined, CodeOutlined, BarChartOutlined, EditOutlined, ReadOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/auth_context';
 import { Avatar } from 'primereact/avatar';
@@ -27,7 +27,7 @@ const NavigationMenu: React.FC = () => {
   const { user, logout } = useAuth();
   const isAdminRoute = location.pathname.includes('/admin');
 
-  // Khai báo rõ kiểu ref ở đây:
+  // type of ref :
   const menuRef = useRef<Menu>(null);
 
 const selectedKey = (isAdminRoute
