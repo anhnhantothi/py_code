@@ -3,7 +3,7 @@
 // getPatientProfile: Gọi API lấy thông tin hồ sơ bệnh nhân
 export const getPatientProfile = async (userId: string) => {
   const token = localStorage.getItem("token");
-  console.log(token);
+//   console.log(token);
   const response = await fetch(`http://localhost:5000/profile?userId=${userId}`, {
     method: "GET",
     headers: {

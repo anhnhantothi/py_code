@@ -9,6 +9,8 @@ import { useToast } from "../../contexts/ToastContext";
 import { getPatientProfile, setVipStatus, updatePatientProfile } from "./patientService";
 import { createUser, User } from "./userModel";
 import { motion } from "framer-motion";
+import PracticeProgress from "./PracticeProgress";
+import TopicProgress from "./TopicProgress";
 
 // import { useAuth } from "../../contexts/auth_context";
 export const getInitials = (fullName: string | undefined): string => {
@@ -88,12 +90,12 @@ const PatientProfileUI = () => {
       acceptClassName: 'p-button-danger',
       acceptLabel: 'Xác nhận',
       rejectLabel: 'Hủy',
-      accept: () => setVipStatus(userId).then((e) => {
+      accept: () => setVipStatus(userId).then(() => {
         getPatientProfile(userId)
           .then((data) => setPatientData(data))
           .catch((err) => console.error(err));
         toast.showSuccess("Kích hoạt vip thành công");
-      }).catch((e) => {
+      }).catch(() => {
         toast.showError("Kích hoạt vip thất bại");
       }),
     });
@@ -107,7 +109,7 @@ const PatientProfileUI = () => {
     <>
       <ConfirmDialog />
       <motion.div
-        className="mx-auto w-full max-w-4xl h-screen px-4 py-8"
+        className="mx-auto w-full max-w-4xl min-h-screen px-4 py-8 pb-28"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -221,6 +223,8 @@ const PatientProfileUI = () => {
             )}
           </div>
         </div>
+        <TopicProgress />
+        <PracticeProgress />
       </motion.div>
     </>
   );
