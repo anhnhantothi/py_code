@@ -61,7 +61,7 @@ const selectedKey = (isAdminRoute
     },
   ];
   return (
-    <div className=" w-screen fixed top-0 left-0 z-10 flex items-center justify-between bg-white shadow-md px-6">
+    <div className="z-50 w-screen h-16 fixed top-0 left-0 z-10 flex items-center justify-between bg-white shadow-md px-6">
       <AntMenu
         theme="light"
         mode="horizontal"

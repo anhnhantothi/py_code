@@ -1,114 +1,141 @@
-// File: src/components/EmptyLesson.tsx
-import React from 'react';
-import { Button, Timeline, Typography } from 'antd';
-import {
-  BookFilled,
-  CheckCircleOutlined,
-  CodeOutlined,
-  DatabaseOutlined,
-  SyncOutlined,
-  FunctionOutlined,
-} from '@ant-design/icons';
+// src/components/EmptyLesson.tsx
+import { SiPython } from 'react-icons/si';
+import { FaCheckCircle } from 'react-icons/fa';
+import { CodeOutlined, DatabaseOutlined, SyncOutlined, FunctionOutlined } from '@ant-design/icons';
+import '@fontsource/poppins';
 
-interface Props {
-  /** Gọi khi người dùng click vào nút bắt đầu hoặc placeholder */
-  onPromptSidebar: () => void;
-}
+interface Props { onPromptSidebar: () => void; }
 
 const outcomes = [
-  'Hiểu được cú pháp cơ bản của Python',
-  'Viết chương trình in ra thông điệp đầu tiên',
-  'Nâng cao tư duy logic và kỹ năng giải thuật cơ bản',
-  'Chuẩn bị sẵn sàng cho các bài tập nâng cao và dự án thực tế',
+  'Hiểu cú pháp cơ bản của Python',
+  'In thông điệp “Hello, Python!”',
+  'Phát triển tư duy giải thuật',
+  'Sẵn sàng với dự án thực tế',
 ];
 
 const topicsList = [
-  { icon: <CodeOutlined style={{ fontSize: 28, color: '#4F46E5' }} />, label: 'Biến và Kiểu dữ liệu' },
-  { icon: <DatabaseOutlined style={{ fontSize: 28, color: '#4F46E5' }} />, label: 'Cấu trúc điều kiện' },
-  { icon: <SyncOutlined style={{ fontSize: 28, color: '#4F46E5' }} />, label: 'Vòng lặp và lặp' },
-  { icon: <FunctionOutlined style={{ fontSize: 28, color: '#4F46E5' }} />, label: 'Hàm và Module' },
+  { icon: <CodeOutlined className="text-2xl" />, label: 'Biến & Kiểu dữ liệu' },
+  { icon: <DatabaseOutlined className="text-2xl" />, label: 'Cấu trúc điều kiện' },
+  { icon: <SyncOutlined className="text-2xl" />, label: 'Vòng lặp' },
+  { icon: <FunctionOutlined className="text-2xl" />, label: 'Hàm & Module' },
+    { icon: <CodeOutlined className="text-2xl" />, label: 'Biến & Kiểu dữ liệu' },
+  { icon: <DatabaseOutlined className="text-2xl" />, label: 'Cấu trúc điều kiện' },
+  { icon: <SyncOutlined className="text-2xl" />, label: 'Vòng lặp' },
+  { icon: <FunctionOutlined className="text-2xl" />, label: 'Hàm & Module' },
+
+    { icon: <CodeOutlined className="text-2xl" />, label: 'Biến & Kiểu dữ liệu' },
+  { icon: <DatabaseOutlined className="text-2xl" />, label: 'Cấu trúc điều kiện' },
+  { icon: <SyncOutlined className="text-2xl" />, label: 'Vòng lặp' },
+  { icon: <FunctionOutlined className="text-2xl" />, label: 'Hàm & Module' },
+
 ];
 
-const EmptyLesson: React.FC<Props> = ({ onPromptSidebar }) => {
+export default function EmptyLesson({ onPromptSidebar }: Props) {
   return (
-    <div className="w-full">
-      {/* Hero Section */}
-      <section className="bg-white py-20">
-        <div className="container mx-auto px-4 text-center">
-          <BookFilled className="mx-auto text-6xl text-indigo-600" />
-          <Typography.Title level={1} className="mt-6 text-gray-900">
-            Chào mừng đến với Python Course!
-          </Typography.Title>
-          <Typography.Paragraph className="mt-4 text-lg text-gray-600">
-            Khám phá Python từng bước: từ in thông điệp đầu tiên đến giải quyết bài toán thực tiễn.
-          </Typography.Paragraph>
-          <Button
-            type="primary"
-            size="large"
-            className="mt-8"
-            onClick={onPromptSidebar}
-          >
-            Bắt đầu ngay
-          </Button>
+    <div className="font-poppins text-gray-800">
+
+      {/* Hero */}
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+          {/* Text */}
+          <div className="space-y-6">
+            <SiPython className="text-7xl text-indigo-500 mx-auto md:mx-0" />
+            <h1 className="text-4xl font-bold">
+              Chào mừng đến với <span className="text-indigo-500">Python Course</span>!
+            </h1>
+            <p className="text-lg text-gray-600">
+              Học Python từ những bước đầu tiên đến áp dụng giải quyết bài toán thực tế.
+            </p>
+            <button
+              onClick={onPromptSidebar}
+              className="
+                inline-block px-8 py-3
+                bg-indigo-500 text-white
+                font-medium rounded-lg
+                hover:bg-indigo-600 transition
+              "
+            >
+              Bắt đầu ngay
+            </button>
+          </div>
+          {/* Graphic (ảnh hoặc illustration) */}
+          <div className="flex justify-center">
+            <div className="w-64 h-64 bg-indigo-50 rounded-full flex items-center justify-center shadow-lg">
+              <SiPython className="text-8xl text-indigo-500" />
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Outcomes Section */}
-      <section className="bg-indigo-50 py-20">
-        <div className="container mx-auto px-4 max-w-2xl">
-          <Typography.Title level={2} className="text-gray-800 mb-6 text-center">
+      {/* Outcomes */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <h2 className="text-2xl font-semibold text-center mb-8">
             Sau khi hoàn thành, bạn sẽ:
-          </Typography.Title>
-          <Timeline
-            mode="left"
-            items={outcomes.map((item) => ({
-              children: <Typography.Text className="text-gray-700">{item}</Typography.Text>,
-              dot: <CheckCircleOutlined style={{ fontSize: '16px', color: '#52c41a' }} />,
-            }))}
-          />
-        </div>
-      </section>
-
-      {/* Topics Section */}
-      <section className="bg-white py-20">
-        <div className="container mx-auto px-4">
-          <Typography.Title level={2} className="text-gray-800 mb-6">
-            Các chủ đề chính bạn sẽ học:
-          </Typography.Title>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {topicsList.map((topic) => (
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {outcomes.map((o, i) => (
               <div
-                key={topic.label}
-                className="flex flex-col items-center p-6 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors cursor-pointer"
-                onClick={onPromptSidebar}
+                key={i}
+                className="
+                  flex items-start space-x-4
+                  bg-white p-6 rounded-xl shadow
+                  hover:shadow-lg transition
+                "
               >
-                {topic.icon}
-                <Typography.Text className="mt-3 font-medium text-gray-700">
-                  {topic.label}
-                </Typography.Text>
+                <FaCheckCircle className="text-green-500 text-xl mt-1" />
+                <p>{o}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Call to Action Footer */}
-      <section className="bg-indigo-600 py-12">
-        <div className="container mx-auto px-4 text-center">
-          <Typography.Title level={3} className="text-white">
-            Sẵn sàng bắt đầu hành trình Python của bạn?
-          </Typography.Title>
-          <Button
-            type="primary"
-            size="large"
+      {/* Topics */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-6">
+          <h2 className="text-2xl font-semibold mb-6">Các chủ đề chính:</h2>
+          <div className="overflow-x-auto hide-scrollbar">
+            <div className="flex space-x-4">
+              {topicsList.map((t) => (
+                <div
+                  key={t.label}
+                  onClick={onPromptSidebar}
+                  className="
+                    flex-shrink-0 w-48 p-4
+                    bg-indigo-50 rounded-xl
+                    text-center cursor-pointer
+                    hover:bg-indigo-100 transition
+                  "
+                >
+                  <div className="text-indigo-500 mb-2">{t.icon}</div>
+                  <div className="font-medium">{t.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer CTA */}
+      <section className="py-16 bg-indigo-600">
+        <div className="container mx-auto px-6 text-center">
+          <h3 className="text-white text-2xl font-semibold mb-6">
+            Sẵn sàng bắt đầu hành trình Python?
+          </h3>
+          <button
             onClick={onPromptSidebar}
+            className="
+              inline-block px-8 py-3
+              bg-white text-indigo-600
+              font-medium rounded-lg
+              hover:bg-gray-100 transition
+            "
           >
             Chọn bài học ngay
-          </Button>
+          </button>
         </div>
       </section>
     </div>
   );
-};
-
-export default EmptyLesson;
+}
