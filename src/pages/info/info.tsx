@@ -21,6 +21,7 @@ export const getInitials = (fullName: string | undefined): string => {
     names[0].charAt(0) + names[names.length - 1].charAt(0)
   ).toUpperCase();
 };
+
 const PatientProfileUI = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [patientData, setPatientData] = useState<User>();
@@ -32,6 +33,30 @@ const PatientProfileUI = () => {
   ];
   const toast = useToast();
 
+  // ✅ Hàm tải lại thông tin người dùng
+  const loadProfile = () => {
+    const searchParams = new URLSearchParams(location.search);
+    const userId = searchParams.get("userId");
+
+    if (userId) {
+      getPatientProfile(userId)
+        .then((data) => setPatientData(data))
+        .catch((err) => console.error(err));
+    }
+  };
+
+  // Listen to ai-used event
+  useEffect(() => {
+    const handler = () => {
+      loadProfile(); // Callback function
+    };
+
+    window.addEventListener('ai-used', handler);
+    return () => {
+      window.removeEventListener('ai-used', handler); // cleanup
+    };
+  }, []);
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const userId = searchParams.get("userId");
@@ -39,9 +64,7 @@ const PatientProfileUI = () => {
     // const userId = user?.id;
 
     if (userId) {
-      getPatientProfile(userId)
-        .then((data) => setPatientData(data))
-        .catch((err) => console.error(err));
+      loadProfile(); // ✅ Dùng lại hàm đã viết thay vì trùng code
     } else {
       const emptyUser: User = createUser();
       setPatientData(emptyUser);
@@ -90,12 +113,12 @@ const PatientProfileUI = () => {
       acceptClassName: 'p-button-danger',
       acceptLabel: 'Xác nhận',
       rejectLabel: 'Hủy',
-      accept: () => setVipStatus(userId).then(() => {
+      accept: () => setVipStatus(userId).then((e) => {
         getPatientProfile(userId)
           .then((data) => setPatientData(data))
           .catch((err) => console.error(err));
         toast.showSuccess("Kích hoạt vip thành công");
-      }).catch(() => {
+      }).catch((e) => {
         toast.showError("Kích hoạt vip thất bại");
       }),
     });
@@ -104,7 +127,7 @@ const PatientProfileUI = () => {
   function upVip() {
     confirmtChangeStatus();
   }
-
+console.log("👉 Đang hiển thị useNumber:", patientData?.useNumber);
   return (
     <>
       <ConfirmDialog />
@@ -146,7 +169,8 @@ const PatientProfileUI = () => {
                   onClick={() => { upVip(); }}
                   whileHover={{ scale: 1.05 }}
                 >
-                  Bạn còn {patientData?.useNumber ?? 0} lần dùng thử, nâng cấp ngay !!!
+                  {/* Bạn còn {patientData?.useNumber ?? 0} lần dùng thử, nâng cấp ngay !!! */}
+                  Bạn đã sử dụng {patientData?.useNumber ?? 0}/7 lượt miễn phí. Nâng cấp VIP để tiếp tục!
                 </motion.span>
               )}
             </div>

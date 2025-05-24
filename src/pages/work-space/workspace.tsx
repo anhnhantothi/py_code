@@ -7,6 +7,8 @@ import { customLightTheme } from './codemirrorTheme';
 import DocsPage from './DocsPage';
 import ChatFixModal from '../../components/ChatFixModal';
 import { motion } from 'framer-motion';
+import { useCheckChatLimit } from '../../hooks/useCheckChatLimit';
+import { useToast } from '../../contexts/ToastContext';
 
 const extractPrompts = (code: string): string[] => {
   const regex = /input\((['"])(.*?)\1\)/g;
@@ -27,6 +29,9 @@ const Workspace: React.FC = () => {
   const [editing, setEditing] = useState<boolean>(true);
   const [showFix, setShowFix] = useState(false);
 
+  const { checkLimit } = useCheckChatLimit(); 
+  const toast = useToast();
+
   const prompts = extractPrompts(code);
 
   const handleRun = async () => {
@@ -46,6 +51,12 @@ const Workspace: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFixClick = async () => {
+    const allowed = await checkLimit();
+    if (!allowed) return;
+    setShowFix(true);
   };
 
   return (
@@ -70,7 +81,7 @@ const Workspace: React.FC = () => {
                 !error.includes('🚫') &&
                 !error.includes('⏰') && (
                   <button
-                    onClick={() => setShowFix(true)}
+                    onClick={handleFixClick} // ✅ Gọi đúng hàm
                     className="text-blue-600 underline hover:text-blue-800 text-sm"
                   >
                     🛠 Sửa Code
@@ -128,13 +139,6 @@ const Workspace: React.FC = () => {
 
           <div className="flex-1 flex flex-col">
             <label className="text-xs font-semibold text-gray-600">Output</label>
-
-            {/* {error && (
-              <div className="text-sm text-red-600 whitespace-pre-wrap font-mono mb-2">
-                {error}
-              </div>
-            )} */}
-
             <div className="flex-1 p-3 mt-1 overflow-auto bg-white border rounded font-mono text-sm text-gray-800 whitespace-pre-wrap">
               {!error?.includes('🚫') && output}
             </div>

@@ -1,7 +1,11 @@
 // File: src/components/ChatFixModal.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal, Button, Spin } from 'antd';
 import { useAIChat } from './useAIChat';
+import axios from 'axios';
+import { API_BASE } from '../config';
+
+const token = localStorage.getItem('token');
 
 interface ChatFixModalProps {
   visible: boolean;
@@ -9,9 +13,10 @@ interface ChatFixModalProps {
   errorMsg: string;
   onClose: () => void;
   onApply: (fixedCode: string) => void;
+  onUsedAI?: () => void; //  callback function to load user profile
 }
 
-export default function ChatFixModal({ visible, code, errorMsg, onClose, onApply }: ChatFixModalProps) {
+export default function ChatFixModal({ visible, code, errorMsg, onClose, onApply, onUsedAI }: ChatFixModalProps) {
   const prompt = `The following Python code produced this error:
 ${errorMsg}
 
@@ -27,6 +32,23 @@ Please provide a corrected version without explanation.`;
   ];
 
   const { loading, response } = useAIChat(visible, messages);
+
+  // Call API to count usage
+  useEffect(() => {
+    if (!visible || !response) return;
+
+    axios.post(`${API_BASE}/api/use-chat`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    }).then(() => {
+      window.dispatchEvent(new Event('ai-used'));
+      onUsedAI?.();
+    }).catch((err) => {
+      console.error('❌ Lỗi khi ghi nhận lượt sử dụng AI:', err);
+    });
+  }, [visible, response]);
 
   const getFixedCode = () => {
     const match = response.match(/```python\n([\s\S]*?)```/);

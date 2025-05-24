@@ -1,9 +1,11 @@
 // File: src/components/ChatReviewModal.tsx
 import { Modal, Button, Spin } from 'antd';
-import { useAIChat } from './useAIChat';
 import { useEffect, useState } from 'react';
+import { useAIChat } from './useAIChat';
 import axios from 'axios';
-import {API_BASE} from '../config';
+import { API_BASE } from '../config';
+import { useToast } from '../contexts/ToastContext';
+
 const token = localStorage.getItem('token');
 
 interface ChatReviewModalProps {
@@ -13,6 +15,7 @@ interface ChatReviewModalProps {
   sampleAnswer?: string;
   slug: string;
   onClose: () => void;
+  onUsedAI?: () => void; // Optional: reload hồ sơ sau khi dùng AI
 }
 
 export default function ChatReviewModal({
@@ -21,8 +24,12 @@ export default function ChatReviewModal({
   description,
   sampleAnswer,
   slug,
-  onClose
+  onClose,
+  onUsedAI
 }: ChatReviewModalProps) {
+  const toast = useToast();
+  const [score, setScore] = useState<number | null>(null);
+
   const prompt = `Bạn là giáo viên Python, hãy đánh giá đoạn mã học sinh viết cho yêu cầu sau:
 
 Đề bài:
@@ -48,9 +55,28 @@ Hãy trả lời với:
     { role: 'user', content: prompt }
   ];
 
+  // ✅ Gọi AI ngay khi visible
   const { loading, response } = useAIChat(visible, messages);
-  const [score, setScore] = useState<number | null>(null);
 
+  // ✅ Ghi nhận lượt sử dụng AI sau khi có phản hồi
+  useEffect(() => {
+    if (!visible || !response) return;
+
+    axios.post(`${API_BASE}/api/use-chat`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    }).then(() => {
+      window.dispatchEvent(new Event('ai-used'));
+      onUsedAI?.();
+    }).catch((err) => {
+      console.error('❌ Lỗi khi ghi nhận lượt sử dụng AI:', err);
+      toast.showWarn("⚠️ Lượt sử dụng không được ghi nhận.");
+    });
+  }, [visible, response]);
+
+  // ✅ Gửi điểm khi AI đã phản hồi
   useEffect(() => {
     if (!visible || !response) return;
 
@@ -63,28 +89,20 @@ Hãy trả lời với:
       extractedScore <= 10
     ) {
       setScore(extractedScore);
-      console.log('📤 Sending submit payload:', {
+
+      axios.post(`${API_BASE}/api/practices/submit`, {
         slug,
         code,
         score: extractedScore
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }).catch((err) => {
+        console.error('❌ Lỗi khi lưu kết quả:', err);
       });
-
-      axios
-        .post(`${API_BASE}/api/practices/submit`, {
-          slug,
-          code,
-          score: extractedScore
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
-        .catch((err) => {
-          console.error('❌ Lỗi khi lưu kết quả:', err);
-        });
     }
-  }, [response, slug, code]);
+  }, [response]);
 
   return (
     <Modal
