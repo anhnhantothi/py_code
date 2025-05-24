@@ -184,7 +184,6 @@ const LessonPage: React.FC = () => {
     })),
   }));
 
-  // Khi bấm hoàn thành bài và chuyển tiếp
   const handleCompleteAndNext = async () => {
     if (!lesson || !currentTopic) return;
     try {
@@ -237,9 +236,9 @@ const LessonPage: React.FC = () => {
               <h1 className="text-3xl font-bold text-blue-600 mb-2">
                 {lesson.title}
               </h1>
-              <p className="text-sm text-gray-500 mb-4">
+              {/* <p className="text-sm text-gray-500 mb-4">
                 Level: <span className="font-medium">{lesson.level}</span>
-              </p>
+              </p> */}
               <p className="text-gray-700">{lesson.description}</p>
             </div>
 

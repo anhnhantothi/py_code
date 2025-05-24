@@ -85,11 +85,11 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-gray-100 text-gray-700">
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 flex flex-col">
         <section
           className="relative h-screen bg-white text-gray-900 font-poppins"
         >
-          {/* 👇 2 blob tím nhạt làm điểm nhấn */}
+          {/* Decorative gradient background */}
           <div className="absolute -left-32 -top-32 w-72 h-72 bg-purple-100 rounded-full filter blur-3xl opacity-10 animate-blob" />
           <div className="absolute -right-32 -bottom-32 w-96 h-96 bg-purple-100 rounded-full filter blur-3xl opacity-10 animate-blob animation-delay-2000" />
 
