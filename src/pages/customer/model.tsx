@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker';
 
 export interface User {
     id: number |null;
+    user_id: number| null; 
     code: string;
     username: string;
     email: string;
@@ -39,6 +40,7 @@ export interface User {
 
   export const createUser = (overrides: Partial<User> = {}): User => ({
     id: null,
+    user_id: null,
     code: "",
     username: "",
     email: "",

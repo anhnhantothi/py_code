@@ -9,7 +9,7 @@ import { ToastProvider } from './contexts/ToastContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <PrimeReactProvider>
+    <PrimeReactProvider value={{ ripple: true }}>
       <BrowserRouter>
         <ToastProvider>
           <AuthProvider>

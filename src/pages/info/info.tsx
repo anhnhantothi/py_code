@@ -9,6 +9,8 @@ import { useToast } from "../../contexts/ToastContext";
 import { getPatientProfile, setVipStatus, updatePatientProfile } from "./patientService";
 import { createUser, User } from "./userModel";
 import { motion } from "framer-motion";
+import PracticeProgress from "./PracticeProgress";
+import TopicProgress from "./TopicProgress";
 
 // import { useAuth } from "../../contexts/auth_context";
 export const getInitials = (fullName: string | undefined): string => {
@@ -19,6 +21,7 @@ export const getInitials = (fullName: string | undefined): string => {
     names[0].charAt(0) + names[names.length - 1].charAt(0)
   ).toUpperCase();
 };
+
 const PatientProfileUI = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [patientData, setPatientData] = useState<User>();
@@ -30,6 +33,30 @@ const PatientProfileUI = () => {
   ];
   const toast = useToast();
 
+  // ✅ Hàm tải lại thông tin người dùng
+  const loadProfile = () => {
+    const searchParams = new URLSearchParams(location.search);
+    const userId = searchParams.get("userId");
+
+    if (userId) {
+      getPatientProfile(userId)
+        .then((data) => setPatientData(data))
+        .catch((err) => console.error(err));
+    }
+  };
+
+  // Listen to ai-used event
+  useEffect(() => {
+    const handler = () => {
+      loadProfile(); // Callback function
+    };
+
+    window.addEventListener('ai-used', handler);
+    return () => {
+      window.removeEventListener('ai-used', handler); // cleanup
+    };
+  }, []);
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const userId = searchParams.get("userId");
@@ -37,9 +64,7 @@ const PatientProfileUI = () => {
     // const userId = user?.id;
 
     if (userId) {
-      getPatientProfile(userId)
-        .then((data) => setPatientData(data))
-        .catch((err) => console.error(err));
+      loadProfile(); // ✅ Dùng lại hàm đã viết thay vì trùng code
     } else {
       const emptyUser: User = createUser();
       setPatientData(emptyUser);
@@ -102,12 +127,12 @@ const PatientProfileUI = () => {
   function upVip() {
     confirmtChangeStatus();
   }
-
+console.log("👉 Đang hiển thị useNumber:", patientData?.useNumber);
   return (
     <>
       <ConfirmDialog />
       <motion.div
-        className="mx-auto w-full max-w-4xl h-screen px-4 py-8"
+        className="mx-auto w-full max-w-4xl min-h-screen px-4 py-8 pb-28"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -144,7 +169,8 @@ const PatientProfileUI = () => {
                   onClick={() => { upVip(); }}
                   whileHover={{ scale: 1.05 }}
                 >
-                  Bạn còn {patientData?.useNumber ?? 0} lần dùng thử, nâng cấp ngay !!!
+                  {/* Bạn còn {patientData?.useNumber ?? 0} lần dùng thử, nâng cấp ngay !!! */}
+                  Bạn đã sử dụng {patientData?.useNumber ?? 0}/7 lượt miễn phí. Nâng cấp VIP để tiếp tục!
                 </motion.span>
               )}
             </div>
@@ -221,6 +247,8 @@ const PatientProfileUI = () => {
             )}
           </div>
         </div>
+        <TopicProgress />
+        <PracticeProgress />
       </motion.div>
     </>
   );

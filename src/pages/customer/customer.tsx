@@ -53,18 +53,18 @@ const deleteUserInfo = async (userInfoId: number) => {
 
 
 const activeVip = async (userInfoId: number) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
 
-  const response = await fetch(`http://localhost:5000//user-info/vip-status?userId=${userInfoId}`, {
-    method: 'PUT',
+  const response = await fetch(`http://localhost:5000/set-vip?userId=${userInfoId}`, {
+    method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`
     }
   });
 
   if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Xoá thất bại: ${response.status} - ${error}`);
+    const err = await response.text();
+    throw new Error(`Failed to set VIP status: ${response.status} - ${err}`);
   }
 
   return await response.json();
@@ -159,6 +159,8 @@ export default function CustomerManage() {
   const acceptChange = (id: number,) => {
     setLoading(true)
     activeVip(id).then((e) => {
+      getDataUser();
+      //get lại data user
       toast.showSuccess("Kích hoạt vip thành công")
     }).catch((e) => {
       toast.showError("Kích hoạt vip thất bại")

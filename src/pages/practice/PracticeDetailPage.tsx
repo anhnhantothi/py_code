@@ -9,6 +9,7 @@ import ChatReviewModal from '../../components/ChatReviewModal';
 import CommentSection from '../../components/CommentArea';
 import { fetchPracticeBySlug } from '../../services/practiceService';
 import { Difficulty } from './difficultyEnum';
+import { useCheckChatLimit } from '../../hooks/useCheckChatLimit';
 
 const mapDifficultyToVietnamese = (diff: string): string => {
   switch (diff) {
@@ -26,6 +27,7 @@ export default function PracticeDetailPage() {
   const [code, setCode] = useState('');
   const [submittedCode, setSubmittedCode] = useState('');
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const { checkLimit } = useCheckChatLimit();
 
   useEffect(() => {
     if (!slug) return;
@@ -36,10 +38,14 @@ export default function PracticeDetailPage() {
 
   if (!data) return <p className="p-4">Đang tải đề bài...</p>;
 
-  const handleSubmitCode = (c: string) => {
-    setSubmittedCode(c);
-    setShowReviewModal(true);
-  };
+  
+const handleSubmitCode = async (c: string) => {
+  const allowed = await checkLimit();
+  console.log(allowed)
+  if (!allowed) return;
+  setSubmittedCode(c);
+  setShowReviewModal(true);
+};
 
   return (
     <div className="w-full h-screen flex flex-col">
@@ -89,7 +95,11 @@ export default function PracticeDetailPage() {
               onSubmit={handleSubmitCode}
               onChange={setCode}
               extraElements={
-                <Button type="primary" className="ml-2">
+                <Button
+                  type="primary"
+                  className="ml-2"
+                  onClick={() => handleSubmitCode(code)}
+                >
                   Nộp bài
                 </Button>
               }
