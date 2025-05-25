@@ -15,7 +15,7 @@ interface ChatReviewModalProps {
   sampleAnswer?: string;
   slug: string;
   onClose: () => void;
-  onUsedAI?: () => void; // Optional: reload hồ sơ sau khi dùng AI
+  onUsedAI?: () => void; 
 }
 
 export default function ChatReviewModal({
@@ -55,10 +55,10 @@ Hãy trả lời với:
     { role: 'user', content: prompt }
   ];
 
-  // ✅ Gọi AI ngay khi visible
+  // call when visible change
   const { loading, response } = useAIChat(visible, messages);
 
-  // ✅ Ghi nhận lượt sử dụng AI sau khi có phản hồi
+  // record usage
   useEffect(() => {
     if (!visible || !response) return;
 
@@ -76,7 +76,7 @@ Hãy trả lời với:
     });
   }, [visible, response]);
 
-  // ✅ Gửi điểm khi AI đã phản hồi
+  // Post score
   useEffect(() => {
     if (!visible || !response) return;
 

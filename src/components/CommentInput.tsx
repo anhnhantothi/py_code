@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Avatar } from 'primereact/avatar';
 import { Button } from 'primereact/button';
+import { useAuth } from '../contexts/auth_context';
 
 interface CommentInputProps {
   handleCommentSubmit: (e: string) => void;
@@ -9,11 +10,12 @@ interface CommentInputProps {
 
 const CommentInputBox: React.FC<CommentInputProps> = ({ handleCommentSubmit }) => {
   const [newComment, setNewComment] = useState('');
+  const { user } = useAuth();
 
   return (
     <div className="flex-col items-start gap-3 mb-4">
       <div className='flex'>
-        <Avatar label={"A"} className="bg-blue-600 text-white w-12 h-12 mr-4" />
+        <Avatar label={(user?.fullName ?? user?.full_name ?? "U").charAt(0).toUpperCase()} className="bg-blue-600 text-white w-12 h-12 mr-4" />
         <div className="flex-1">
           <textarea
             value={newComment}

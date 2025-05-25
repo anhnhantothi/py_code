@@ -36,13 +36,13 @@ const CommentSection = ({id}:CommentSectionProps) => {
 
   const handleCommentSubmit = async (content: string) => {
     if (!_practiceId) return;
-    await postComment(user!.id!, _practiceId, content); 
+    await postComment(user!.user_id!, _practiceId, content); 
     loadComments(_practiceId);
   };
 
   const handleReplySubmit = async (content: string, parentId: number) => {
     if (!_practiceId) return;
-    await postComment(user!.id!, _practiceId, content, parentId);
+    await postComment(user!.user_id!, _practiceId, content, parentId);
     loadComments(_practiceId);
   };
 

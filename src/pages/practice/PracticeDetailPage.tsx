@@ -41,6 +41,7 @@ export default function PracticeDetailPage() {
   
 const handleSubmitCode = async (c: string) => {
   const allowed = await checkLimit();
+  console.log(allowed)
   if (!allowed) return;
   setSubmittedCode(c);
   setShowReviewModal(true);

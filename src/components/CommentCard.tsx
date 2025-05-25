@@ -41,11 +41,11 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment, handleReply, handleL
     <div className="bg-blue-50 p-4 rounded-2xl shadow-lg mb-4">
       <div className="flex items-start gap-4">
         <Avatar
-          label={comment.name.charAt(0).toUpperCase()}
+          label={comment.username.charAt(0).toUpperCase()}
           className="bg-blue-600 text-white w-12 h-12"
         />
         <div className="flex-1">
-          <div className="text-lg font-semibold text-gray-700">{comment.name}</div>
+          <div className="text-lg font-semibold text-gray-700">{comment.username}</div>
           <div className="text-sm text-gray-500">{getRelativeTime(comment.created_at)}</div>
           <p className="mt-2 text-gray-800">{comment.content}</p>
 

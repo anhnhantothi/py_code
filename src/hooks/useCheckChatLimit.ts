@@ -15,6 +15,9 @@ export const useCheckChatLimit = () => {
       });
 
       const data = await res.json();
+      console.log(data);
+      console.log(data.allow);
+      console.log(res.ok);
 
       if (!res.ok || !data.allow) {
         if (data.require_vip) {
@@ -22,6 +25,8 @@ export const useCheckChatLimit = () => {
         } else {
           toast.showError(data.error || 'Có lỗi khi kiểm tra lượt sử dụng.');
         }
+              console.log(data,"false");
+
         return false;
       }
 
