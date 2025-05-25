@@ -11,6 +11,7 @@ export interface User {
   enabled?: boolean;
   vip?: boolean;
   useNumber?: number;
+  isAdmin?: boolean;
 }
 
 export const createUser = (): User => ({
@@ -23,4 +24,5 @@ export const createUser = (): User => ({
   enabled: true,
   vip: false,
   useNumber: 3,
+  isAdmin: false
 });

@@ -38,17 +38,16 @@ export default function PracticeDetailPage() {
 
   if (!data) return <p className="p-4">Đang tải đề bài...</p>;
 
-  
-const handleSubmitCode = async (c: string) => {
+  const handleSubmitCode = async (c: string) => {
   const allowed = await checkLimit();
-  console.log(allowed)
+  console.log(allowed);
   if (!allowed) return;
   setSubmittedCode(c);
   setShowReviewModal(true);
 };
 
   return (
-    <div className="w-full h-screen flex flex-col">
+    <div className="w-full h-screen flex flex-col pt-4">
       {/* --- CUSTOM HEADER --- */}
       <div className="flex items-center space-x-4 p-4 bg-white shadow-sm z-10">
         <Button
@@ -87,6 +86,7 @@ const handleSubmitCode = async (c: string) => {
         {/* RIGHT PANEL */}
         <div className="w-full md:w-3/5 p-6 bg-white shadow-inner flex flex-col">
           <h3 className="text-lg font-medium mb-4">💻 Viết và chạy mã Python:</h3>
+          <i className='text-sm text-gray-500'>Bạn cần đạt ít nhất 5đ để hoàn thành </i>
           <div className="flex-1 overflow-y-auto">
             <PythonRunner
               initialCode={code}

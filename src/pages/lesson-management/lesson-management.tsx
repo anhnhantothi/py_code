@@ -87,7 +87,7 @@ export default function LessonManage() {
                 <Button className='!bg-blue-500' onClick={() => {
                     handleCreate()
                 }} >
-                    Thêm bài tập
+                    Thêm bài học
                 </Button>
             </div>
         );

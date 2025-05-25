@@ -50,7 +50,7 @@ export default function EmptyLesson({ onPromptSidebar }: Props) {
               onClick={onPromptSidebar}
               className="
                 inline-block px-8 py-3
-                bg-indigo-500 text-white
+                bg-indigo-500 text-purple
                 font-medium rounded-lg
                 hover:bg-indigo-600 transition
               "

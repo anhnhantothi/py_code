@@ -61,7 +61,7 @@ Hãy trả lời với:
   // record usage
   useEffect(() => {
     if (!visible || !response) return;
-
+    if (!token) return;
     axios.post(`${API_BASE}/api/use-chat`, {}, {
       headers: {
         Authorization: `Bearer ${token}`,

@@ -213,7 +213,7 @@ const LessonPage: React.FC = () => {
   };
 
   return (
-    <Layout className="w-screen h-screen">
+    <Layout className="w-screen h-screen pt-4">
       <Sider width={250} className="bg-white border-r border-gray-200">
         <Menu
           mode="inline"

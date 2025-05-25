@@ -15,17 +15,13 @@ import CopyrightLogo from '../assets/images/Logo.png';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="relative bg-white border-t pt-16 overflow-hidden">
-      {/* Decorative gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-indigo-50 to-purple-50 opacity-30 transform -skew-y-3 pointer-events-none"></div>
-
-      <div className="relative container mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer className="relative bg-gradient-to-tr from-indigo-50 to-purple-50 pt-12">
+      <div className="container mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-12">
         {/* Column 1: Logo & Description + Social */}
         <div className="space-y-4">
-          <img src={Logo} alt="Logo" className="h-14 mb-2 animate-fade-in" />
-          <p className="text-gray-600">
-            Pylap App là nền tảng học Python trực tuyến, cho phép bạn đọc tài liệu,
-            làm bài tập và thử nghiệm code ngay trên trình duyệt mà không cần cài đặt.
+          <img src={Logo} alt="Logo" className="h-14 mb-2" />
+          <p className="text-gray-700 leading-relaxed">
+            Pylap App là nền tảng học Python trực tuyến, cho phép bạn đọc tài liệu, làm bài tập và thử nghiệm code ngay trên trình duyệt mà không cần cài đặt.
           </p>
           <div className="flex space-x-4 mt-4">
             {[
@@ -49,8 +45,8 @@ const Footer: React.FC = () => {
 
         {/* Column 2: Quick Links */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Liên kết nhanh</h3>
-          <ul className="space-y-2 text-gray-600">
+          <h3 className="text-lg font-semibold text-gray-800">Liên kết nhanh</h3>
+          <ul className="space-y-2 text-gray-700">
             {[
               { to: '/', label: 'Trang Chủ' },
               { to: '/lesson', label: 'Bài học' },
@@ -58,8 +54,8 @@ const Footer: React.FC = () => {
               { to: '/workspace', label: 'Workspace' },
             ].map((link, idx) => (
               <li key={idx}>
-                <motion.div whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
-                  <Link to={link.to} className="hover:text-gray-800">
+                <motion.div whileHover={{ x: 6 }} transition={{ duration: 0.2 }}>
+                  <Link to={link.to} className="hover:text-indigo-700">
                     {link.label}
                   </Link>
                 </motion.div>
@@ -70,48 +66,41 @@ const Footer: React.FC = () => {
 
         {/* Column 3: Contact Info */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Liên hệ</h3>
-          <ul className="space-y-4 text-gray-600">
-            <li className="flex items-start space-x-2">
-              <FaMapMarkerAlt className="mt-1 text-indigo-600 text-xl" />
-              <span>
-                Số 10, Phạm Văn Bạch, Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội
-              </span>
+          <h3 className="text-lg font-semibold text-gray-800">Liên hệ</h3>
+          <ul className="space-y-4 text-gray-700">
+            <li className="flex items-start space-x-3">
+              <FaMapMarkerAlt className="mt-1 text-indigo-500 text-lg" />
+              <span>567 Lê Duẩn, Phường EaTam, Thành phố Buôn Ma Thuột, Đăk Lăk</span>
             </li>
-            <li className="flex items-center space-x-2">
-              <FaPhoneAlt className="text-indigo-600 text-xl" />
+            <li className="flex items-center space-x-3">
+              <FaPhoneAlt className="text-indigo-500 text-lg" />
               <span>1900.123.456 (8h30–21h T2–T6, 8h30–11h30 T7)</span>
             </li>
-            <li className="flex items-center space-x-2">
-              <FaEnvelope className="text-indigo-600 text-xl" />
-              <span>support@pylapapp.io</span>
+            <li className="flex items-center space-x-3">
+              <FaEnvelope className="text-indigo-500 text-lg" />
+              <span>anhnhantothi03@gmai.com</span>
             </li>
           </ul>
         </div>
       </div>
 
       {/* Bottom bar */}
-      <motion.div
-        className="bg-gray-900 py-4 mt-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-      >
+      <div className="bg-gray-900 py-4">
         <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between text-white text-sm">
-          <div className="flex items-center space-x-2 mb-2 md:mb-0">
+          <div className="flex items-center space-x-3 mb-2 md:mb-0">
             <img src={CopyrightLogo} alt="©" className="h-5 w-auto animate-spin-slow" />
             <span>Pylap App © 2025. All rights reserved.</span>
           </div>
           <div className="space-x-4">
-            <Link to="/privacy" className="hover:underline">
+            <Link to="#" className="hover:underline">
               Chính sách bảo mật
             </Link>
-            <Link to="/terms" className="hover:underline">
+            <Link to="#" className="hover:underline">
               Điều khoản sử dụng
             </Link>
           </div>
         </div>
-      </motion.div>
+      </div>
     </footer>
   );
 };

@@ -62,13 +62,13 @@ const LessonEditor: React.FC<Props> = ({
         <div className="flex items-center gap-1">
           <Button
             icon={showSublessons ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-            className="p-button-text"
+            className="p-2 p-button-text"
             onClick={toggleSublessons}
             aria-label="Toggle Sublessons"
           />
           <Button
             icon={<Trash className="w-4 h-4 text-red-500" />}
-            className="p-button-text"
+            className="p-2 rounded-lg hover:bg-red-50 transition"
             onClick={() => onDelete(index)}
             aria-label="Xoá bài học"
           />

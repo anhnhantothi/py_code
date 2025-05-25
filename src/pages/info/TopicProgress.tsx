@@ -152,14 +152,14 @@ const TopicList: React.FC = () => {
                                     <Button
                                         label={expandedTopics.includes(topic.id) ? "Ẩn bài học" : "Xem chi tiết"}
                                         icon="pi pi-eye"
-                                        className="p-button-sm p-button-outlined text-indigo-600 border-indigo-300"
+                                        className="p-button-sm p-button-outlined text-indigo-600 border-indigo-200 w-[200px]"
                                         onClick={() => toggleLessons(topic.id)}
                                     />
                                     {completedMap[topic.id] && (
                                         <Button
                                             label="Xem chứng chỉ"
                                             icon="pi pi-file-pdf"
-                                            className="p-button-sm p-button-danger"
+                                            className="p-button-sm p-button-outlined text-indigo-600 border-indigo-300 w-[200px]"
                                             onClick={() => handleIssueCertificate(topic.id)}
                                         />
                                     )}

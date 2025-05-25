@@ -149,12 +149,10 @@ console.log("👉 Đang hiển thị useNumber:", patientData?.useNumber);
               size="xlarge"
             />
             <div>
-              <h2 className="text-2xl font-semibold flex items-center">
-                {patientData?.fullName}
-                <span className="ml-3 bg-green-100 text-green-800 text-sm px-2 py-1 rounded-full">
-                  {patientData?.enabled ? "Active" : "Inactive"}
-                </span>
-              </h2>
+               {(patientData?.isAdmin ?? false) && <h2 className="text-2xl font-semibold">{patientData?.fullName}
+              <span className="bg-blue-100 text-blue-500 text-sm px-2 py-1 rounded-lg">
+                {patientData?.isAdmin ? "Admin" : "Admin"}
+              </span></h2>}
               <p className="text-gray-500 mt-1">📞 {patientData?.phone}</p>
               {patientData?.vip ? (
                 <motion.span
