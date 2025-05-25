@@ -20,8 +20,15 @@ import { useToast } from '../../contexts/ToastContext';
 import { Difficulty } from '../practice/difficultyEnum';
 
 export const fetchPractices = async (): Promise<SearchSuggestion[]> => {
+        const token = localStorage.getItem("token");
+
     try {
-        const response = await axios.get('http://localhost:5000/api/practices');
+        const response = await axios.get('http://localhost:5000/api/practices', {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+        });
         return response.data.map((item: SearchSuggestion) => item);
     } catch (error) {
         console.error('Lỗi khi gọi API practice:', error);
