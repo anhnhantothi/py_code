@@ -1,10 +1,16 @@
 import { useToast } from '../contexts/ToastContext';
-const token = localStorage.getItem('token');
 
 export const useCheckChatLimit = () => {
   const toast = useToast();
 
   const checkLimit = async (): Promise<boolean> => {
+    const token = localStorage.getItem('token');
+
+    if (!token || token.split('.').length !== 3) {
+      toast.showError('Token không hợp lệ hoặc đã hết hạn. Vui lòng đăng nhập lại.');
+      return false;
+    }
+
     try {
       const res = await fetch('http://localhost:5000/api/check-chat-limit', {
         method: 'GET',
@@ -16,8 +22,6 @@ export const useCheckChatLimit = () => {
 
       const data = await res.json();
       console.log(data);
-      console.log(data.allow);
-      console.log(res.ok);
 
       if (!res.ok || !data.allow) {
         if (data.require_vip) {
@@ -25,8 +29,6 @@ export const useCheckChatLimit = () => {
         } else {
           toast.showError(data.error || 'Có lỗi khi kiểm tra lượt sử dụng.');
         }
-              console.log(data,"false");
-
         return false;
       }
 
