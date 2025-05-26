@@ -29,7 +29,7 @@ const Workspace: React.FC = () => {
   const [editing, setEditing] = useState<boolean>(true);
   const [showFix, setShowFix] = useState(false);
 
-  const { checkLimit } = useCheckChatLimit(); 
+  const { checkLimit } = useCheckChatLimit();
   const toast = useToast();
 
   const prompts = extractPrompts(code);
@@ -46,11 +46,13 @@ const Workspace: React.FC = () => {
       } else if (result.stderr) {
         setError(result.stderr);
       }
+      console.log('🧪 Error:', result.error);
     } catch (e: any) {
       setError('❌ Backend connection error');
     } finally {
       setLoading(false);
     }
+
   };
 
   const handleFixClick = async () => {
@@ -81,12 +83,12 @@ const Workspace: React.FC = () => {
                 !error.includes('🚫') &&
                 !error.includes('⏰') && (
                   <button
-                    onClick={handleFixClick} // ✅ Gọi đúng hàm
+                    onClick={handleFixClick}
                     className="text-blue-600 underline hover:text-blue-800 text-sm"
                   >
                     🛠 Sửa Code
                   </button>
-              )}
+                )}
 
               <button title="Save" className="hover:bg-gray-200 p-1 rounded">💾</button>
               <button title="Settings" className="hover:bg-gray-200 p-1 rounded">⚙️</button>
@@ -118,7 +120,7 @@ const Workspace: React.FC = () => {
           <div>
             <label htmlFor="stdin" className="text-xs font-semibold text-gray-600">STDIN (Optional)</label>
             {prompts.length > 0 && (
-              <p className="mt-1 text-xs text-gray-500">Detected prompts: {prompts.join(' & ')}</p>
+              <p className="mt-1 text-sm font-semibold text-purple-700 ">Detected prompts: {prompts.join('\n & ')}</p>
             )}
             <textarea
               id="stdin"
@@ -139,9 +141,12 @@ const Workspace: React.FC = () => {
 
           <div className="flex-1 flex flex-col">
             <label className="text-xs font-semibold text-gray-600">Output</label>
-            <div className="flex-1 p-3 mt-1 overflow-auto bg-white border rounded font-mono text-sm text-gray-800 whitespace-pre-wrap">
-              {!error?.includes('🚫') && output}
+            <div className="flex-1 p-3 mt-1 overflow-auto bg-white border rounded font-mono text-sm whitespace-pre-wrap text-gray-800">
+              {error?.includes('🚫') ? (
+                <div className="text-red-600 font-semibold">{error}</div>
+              ) : output}
             </div>
+
           </div>
         </motion.div>
 
